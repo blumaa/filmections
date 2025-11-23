@@ -47,6 +47,8 @@ export interface TMDBMovie {
   poster_path: string | null;
   genre_ids: number[];
   overview: string;
+  vote_count: number;
+  popularity: number;
 }
 
 export interface TMDBMovieDetails extends TMDBMovie {

@@ -1,12 +1,12 @@
-import { Modal } from '@mond-design-system/theme/client';
-import { Box, Heading, Text, Button } from '@mond-design-system/theme';
-import type { Group } from '../../types';
-import './ResultsModal.css';
+import { Modal } from "@mond-design-system/theme/client";
+import { Box, Heading, Text, Button } from "@mond-design-system/theme";
+import type { Group } from "../../types";
+import "./ResultsModal.css";
 
 interface ResultsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  gameStatus: 'won' | 'lost';
+  gameStatus: "won" | "lost";
   groups: Group[];
   mistakes: number;
 }
@@ -20,18 +20,24 @@ export function ResultsModal({
 }: ResultsModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <Box padding="6" display="flex" flexDirection="column" gap="lg">
-        <div className="results-title">
+      <Box display="flex" flexDirection="column">
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          paddingBottom="2"
+        >
           <Heading level={2} size="xl">
-            {gameStatus === 'won' ? '🎉 You Won!' : '😔 Game Over'}
+            {gameStatus === "won" ? "🎉 You Won!" : "😔 Game Over"}
           </Heading>
-        </div>
+        </Box>
 
         <div className="results-message">
           <Text variant="body">
-            {gameStatus === 'won'
-              ? `Congratulations! You found all groups with ${mistakes} mistake${mistakes !== 1 ? 's' : ''}.`
-              : 'Better luck next time! Here were the groups:'}
+            {gameStatus === "won"
+              ? `Congratulations! You found all groups with ${mistakes} mistake${mistakes !== 1 ? "s" : ""}.`
+              : "Better luck next time! Here were the groups:"}
           </Text>
         </div>
 
@@ -44,7 +50,7 @@ export function ResultsModal({
                 </Text>
                 <div className="results-group-films">
                   <Text variant="body">
-                    {group.films.map((f) => f.title).join(', ')}
+                    {group.films.map((f) => f.title).join(", ")}
                   </Text>
                 </div>
               </Box>

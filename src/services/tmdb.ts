@@ -109,39 +109,58 @@ export class TMDBService {
     return results.slice(0, limit);
   }
 
-  async getRandomMoviePool(size = 200): Promise<TMDBMovieDetails[]> {
+  async getRandomMoviePool(size = 150): Promise<TMDBMovieDetails[]> {
     const movies: TMDBMovieDetails[] = [];
     const seenIds = new Set<number>();
 
-    // Fetch from multiple random pages of popular movies
-    const randomPages = Array.from({ length: 10 }, () => Math.floor(Math.random() * 50) + 1);
+    // Define eras to ensure good year distribution (1930-now)
+    const currentYear = new Date().getFullYear();
+    const eras = [
+      { start: 1930, end: 1959, weight: 0.15 }, // Classic era
+      { start: 1960, end: 1979, weight: 0.2 },  // Golden age
+      { start: 1980, end: 1999, weight: 0.25 }, // Modern classics
+      { start: 2000, end: 2014, weight: 0.2 },  // Recent classics
+      { start: 2015, end: currentYear, weight: 0.2 }, // Contemporary
+    ];
 
-    for (const page of randomPages) {
-      const response = await this.discoverMovies({
-        sort_by: 'popularity.desc',
-        page,
-      });
+    for (const era of eras) {
+      const targetCount = Math.floor(size * era.weight);
+      const eraMovies: TMDBMovieDetails[] = [];
 
-      // Get full details for each movie (including credits)
-      for (const movie of response.results) {
-        if (seenIds.has(movie.id) || movies.length >= size) continue;
+      // Fetch 2-3 pages from this era
+      const pages = [1, 2, Math.floor(Math.random() * 3) + 3];
 
-        try {
-          const details = await this.getMovieDetails(movie.id);
+      for (const page of pages) {
+        if (eraMovies.length >= targetCount) break;
 
-          // Only include movies with full data
-          if (details.credits?.cast && details.credits?.crew) {
-            movies.push(details);
-            seenIds.add(movie.id);
+        const response = await this.fetch<TMDBDiscoverResponse>('/discover/movie', {
+          sort_by: 'popularity.desc',
+          page: String(page),
+          'primary_release_date.gte': `${era.start}-01-01`,
+          'primary_release_date.lte': `${era.end}-12-31`,
+          'vote_count.gte': '500', // Only well-known films
+          include_adult: 'false',
+        });
+
+        // Get full details for movies in this era
+        for (const movie of response.results) {
+          if (seenIds.has(movie.id) || eraMovies.length >= targetCount) break;
+
+          try {
+            const details = await this.getMovieDetails(movie.id);
+
+            // Only include movies with full data and good vote count
+            if (details.credits?.cast && details.credits?.crew && details.vote_count >= 500) {
+              eraMovies.push(details);
+              seenIds.add(movie.id);
+            }
+          } catch (error) {
+            console.warn(`Failed to fetch details for movie ${movie.id}`, error);
           }
-        } catch (error) {
-          // Skip movies that fail to fetch
-          console.warn(`Failed to fetch details for movie ${movie.id}`, error);
         }
-
-        if (movies.length >= size) break;
       }
 
+      movies.push(...eraMovies);
       if (movies.length >= size) break;
     }
 
