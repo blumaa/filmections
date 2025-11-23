@@ -1,0 +1,17 @@
+.results-title {
+  text-align: center;
+}
+
+.results-message {
+  text-align: center;
+}
+
+.results-group {
+  background-color: var(--mond-colors-gray-100);
+  border: 1px solid var(--mond-colors-gray-300);
+}
+
+.results-group-films {
+  opacity: 0.8;
+  margin-top: 0.25rem;
+}

@@ -1,0 +1,19 @@
+@import "@mond-design-system/theme/theme.css";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--mond-surface-background);
+  color: var(--mond-text-primary);
+  font-family: var(--mond-font-family-sans);
+}
+
+#root {
+  min-height: 100vh;
+}
