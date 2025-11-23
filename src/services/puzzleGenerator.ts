@@ -82,10 +82,10 @@ function analyzeDirectors(movies: TMDBMovieDetails[]): PotentialGroup[] {
 
       // Score: 1 (easy) for very popular directors, 4 (hardest) for obscure ones
       let difficultyScore: number;
-      if (avgVoteCount >= 3000) difficultyScore = 1; // Very popular (Spielberg, Nolan)
-      else if (avgVoteCount >= 1500) difficultyScore = 2; // Well-known
-      else if (avgVoteCount >= 800) difficultyScore = 3; // Moderately known
-      else difficultyScore = 4; // Obscure
+      if (avgVoteCount >= 5000) difficultyScore = 1; // Very popular (Spielberg, Nolan)
+      else if (avgVoteCount >= 2500) difficultyScore = 2; // Well-known
+      else if (avgVoteCount >= 1200) difficultyScore = 3; // Moderately known
+      else difficultyScore = 4; // Lesser known
 
       const { color, difficulty } = getDifficultyFromScore(difficultyScore);
       const shuffled = [...data.movies].sort(() => Math.random() - 0.5);
@@ -127,10 +127,10 @@ function analyzeActors(movies: TMDBMovieDetails[]): PotentialGroup[] {
 
       // Score: 1 (easy) for very popular actors, 4 (hardest) for obscure ones
       let difficultyScore: number;
-      if (avgVoteCount >= 3000) difficultyScore = 1; // Very popular (Tom Hanks, Meryl Streep)
-      else if (avgVoteCount >= 1500) difficultyScore = 2; // Well-known
-      else if (avgVoteCount >= 800) difficultyScore = 3; // Moderately known
-      else difficultyScore = 4; // Obscure
+      if (avgVoteCount >= 5000) difficultyScore = 1; // Very popular (Tom Hanks, Meryl Streep)
+      else if (avgVoteCount >= 2500) difficultyScore = 2; // Well-known
+      else if (avgVoteCount >= 1200) difficultyScore = 3; // Moderately known
+      else difficultyScore = 4; // Lesser known
 
       const { color, difficulty } = getDifficultyFromScore(difficultyScore);
       const shuffled = [...data.movies].sort(() => Math.random() - 0.5);
@@ -171,10 +171,10 @@ function analyzeFranchises(movies: TMDBMovieDetails[]): PotentialGroup[] {
       const avgVoteCount = data.movies.reduce((sum, m) => sum + (m.vote_count || 0), 0) / data.movies.length;
 
       let difficultyScore: number;
-      if (avgVoteCount >= 4000) difficultyScore = 1; // Very popular (Marvel, Star Wars)
-      else if (avgVoteCount >= 2000) difficultyScore = 2; // Well-known
-      else if (avgVoteCount >= 1000) difficultyScore = 3; // Moderately known
-      else difficultyScore = 4; // Obscure
+      if (avgVoteCount >= 6000) difficultyScore = 1; // Very popular (Marvel, Star Wars)
+      else if (avgVoteCount >= 3000) difficultyScore = 2; // Well-known
+      else if (avgVoteCount >= 1500) difficultyScore = 3; // Moderately known
+      else difficultyScore = 4; // Lesser known
 
       const { color, difficulty } = getDifficultyFromScore(difficultyScore);
       const shuffled = [...data.movies].sort(() => Math.random() - 0.5);
@@ -334,8 +334,7 @@ function analyzeWordplay(movies: TMDBMovieDetails[]): PotentialGroup[] {
 }
 
 function selectNonOverlappingGroups(
-  allGroups: PotentialGroup[],
-  count = 4
+  allGroups: PotentialGroup[]
 ): PotentialGroup[] {
   const selected: PotentialGroup[] = [];
   const usedMovieIds = new Set<number>();
@@ -356,40 +355,29 @@ function selectNonOverlappingGroups(
     groupsByColor.set(color, groups.sort(() => Math.random() - 0.5));
   }
 
-  // Try to select one group of each color (yellow, green, blue, purple)
+  // MUST select exactly one group of each color (yellow, green, blue, purple)
   const requiredColors = ['yellow', 'green', 'blue', 'purple'];
 
   for (const color of requiredColors) {
-    if (selected.length >= count) break;
-
     const groupsOfColor = groupsByColor.get(color) || [];
 
     // Find first group of this color that doesn't overlap with selected films
+    let foundForThisColor = false;
     for (const group of groupsOfColor) {
       const hasOverlap = group.films.some((film) => usedMovieIds.has(film.id));
 
       if (!hasOverlap) {
         selected.push(group);
         group.films.forEach((film) => usedMovieIds.add(film.id));
+        foundForThisColor = true;
         break; // Move to next color
       }
     }
-  }
 
-  // If we couldn't get 4 groups (one of each color), fill remaining slots with any non-overlapping groups
-  if (selected.length < count) {
-    const allShuffled = [...allGroups].sort(() => Math.random() - 0.5);
-
-    for (const group of allShuffled) {
-      if (selected.length >= count) break;
-
-      const alreadySelected = selected.some(s => s === group);
-      const hasOverlap = group.films.some((film) => usedMovieIds.has(film.id));
-
-      if (!alreadySelected && !hasOverlap) {
-        selected.push(group);
-        group.films.forEach((film) => usedMovieIds.add(film.id));
-      }
+    // If we couldn't find a group for this color, fail and return what we have
+    // This will trigger a retry in generatePuzzle
+    if (!foundForThisColor) {
+      return selected; // Return incomplete selection to trigger retry
     }
   }
 
@@ -487,7 +475,7 @@ export async function generatePuzzle(): Promise<{
   ];
 
   // Select 4 non-overlapping groups ensuring one of each color
-  const selectedGroups = selectNonOverlappingGroups(allPotentialGroups, 4);
+  const selectedGroups = selectNonOverlappingGroups(allPotentialGroups);
 
   // If we couldn't find 4 non-overlapping groups, retry
   if (selectedGroups.length < 4) {
