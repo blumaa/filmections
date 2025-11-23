@@ -8,7 +8,7 @@ import { tmdbService } from './tmdb';
 interface PotentialGroup {
   films: TMDBMovieDetails[];
   connection: string;
-  type: 'director' | 'actor' | 'genre' | 'decade' | 'wordplay';
+  type: 'director' | 'actor' | 'franchise' | 'theme' | 'wordplay' | 'production';
 }
 
 function tmdbMovieToFilm(movie: TMDBMovieDetails): Film {
@@ -19,6 +19,30 @@ function tmdbMovieToFilm(movie: TMDBMovieDetails): Film {
     poster_path: movie.poster_path || undefined,
   };
 }
+
+// Specific thematic keywords that make interesting connections
+const SPECIFIC_THEMES = [
+  { keywords: ['heist', 'robbery', 'steal'], name: 'Heist films' },
+  { keywords: ['time travel', 'time machine'], name: 'Time travel films' },
+  { keywords: ['artificial intelligence', 'robot', 'ai'], name: 'AI/Robot films' },
+  { keywords: ['zombie', 'undead'], name: 'Zombie films' },
+  { keywords: ['vampire'], name: 'Vampire films' },
+  { keywords: ['superhero', 'marvel', 'dc comics'], name: 'Superhero films' },
+  { keywords: ['space', 'astronaut', 'alien'], name: 'Space films' },
+  { keywords: ['world war', 'vietnam war'], name: 'War films' },
+  { keywords: ['high school', 'college'], name: 'School/College films' },
+  { keywords: ['hitman', 'assassin'], name: 'Assassin films' },
+];
+
+// Production companies that have distinctive styles
+const PRODUCTION_COMPANIES = [
+  { id: 3, name: 'Pixar', label: 'Pixar films' },
+  { id: 2, name: 'Walt Disney', label: 'Disney films' },
+  { id: 420, name: 'Marvel', label: 'Marvel films' },
+  { id: 9993, name: 'DC', label: 'DC films' },
+  { id: 33, name: 'Universal', label: 'Universal films' },
+  { id: 1632, name: 'Lionsgate', label: 'Lionsgate films' },
+];
 
 function analyzeDirectors(movies: TMDBMovieDetails[]): PotentialGroup[] {
   const directorMap = new Map<number, { name: string; movies: TMDBMovieDetails[] }>();
@@ -38,7 +62,6 @@ function analyzeDirectors(movies: TMDBMovieDetails[]): PotentialGroup[] {
 
   for (const [, data] of directorMap) {
     if (data.movies.length >= 4) {
-      // Shuffle and take 4 random movies
       const shuffled = [...data.movies].sort(() => Math.random() - 0.5);
       groups.push({
         films: shuffled.slice(0, 4),
@@ -55,7 +78,7 @@ function analyzeActors(movies: TMDBMovieDetails[]): PotentialGroup[] {
   const actorMap = new Map<number, { name: string; movies: TMDBMovieDetails[] }>();
 
   for (const movie of movies) {
-    const topActors = movie.credits?.cast?.slice(0, 10) || [];
+    const topActors = movie.credits?.cast?.slice(0, 5) || [];
 
     for (const actor of topActors) {
       if (!actorMap.has(actor.id)) {
@@ -81,27 +104,29 @@ function analyzeActors(movies: TMDBMovieDetails[]): PotentialGroup[] {
   return groups;
 }
 
-function analyzeGenres(movies: TMDBMovieDetails[]): PotentialGroup[] {
-  const genreMap = new Map<number, { name: string; movies: TMDBMovieDetails[] }>();
+function analyzeFranchises(movies: TMDBMovieDetails[]): PotentialGroup[] {
+  // Look for movies in the same collection/franchise
+  const franchiseMap = new Map<number, { name: string; movies: TMDBMovieDetails[] }>();
 
   for (const movie of movies) {
-    for (const genre of movie.genres || []) {
-      if (!genreMap.has(genre.id)) {
-        genreMap.set(genre.id, { name: genre.name, movies: [] });
+    if ((movie as any).belongs_to_collection) {
+      const collection = (movie as any).belongs_to_collection;
+      if (!franchiseMap.has(collection.id)) {
+        franchiseMap.set(collection.id, { name: collection.name, movies: [] });
       }
-      genreMap.get(genre.id)!.movies.push(movie);
+      franchiseMap.get(collection.id)!.movies.push(movie);
     }
   }
 
   const groups: PotentialGroup[] = [];
 
-  for (const [, data] of genreMap) {
+  for (const [, data] of franchiseMap) {
     if (data.movies.length >= 4) {
       const shuffled = [...data.movies].sort(() => Math.random() - 0.5);
       groups.push({
         films: shuffled.slice(0, 4),
-        connection: `${data.name} films`,
-        type: 'genre',
+        connection: data.name,
+        type: 'franchise',
       });
     }
   }
@@ -109,28 +134,74 @@ function analyzeGenres(movies: TMDBMovieDetails[]): PotentialGroup[] {
   return groups;
 }
 
-function analyzeDecades(movies: TMDBMovieDetails[]): PotentialGroup[] {
-  const decadeMap = new Map<number, TMDBMovieDetails[]>();
+function analyzeThemes(movies: TMDBMovieDetails[]): PotentialGroup[] {
+  const themeMap = new Map<string, TMDBMovieDetails[]>();
 
   for (const movie of movies) {
-    const year = new Date(movie.release_date).getFullYear();
-    const decade = Math.floor(year / 10) * 10;
+    const overview = movie.overview?.toLowerCase() || '';
+    const title = movie.title.toLowerCase();
+    const keywords = (movie as any).keywords?.keywords || [];
 
-    if (!decadeMap.has(decade)) {
-      decadeMap.set(decade, []);
+    for (const theme of SPECIFIC_THEMES) {
+      const hasTheme = theme.keywords.some(keyword =>
+        overview.includes(keyword) ||
+        title.includes(keyword) ||
+        keywords.some((k: any) => k.name.toLowerCase().includes(keyword))
+      );
+
+      if (hasTheme) {
+        if (!themeMap.has(theme.name)) {
+          themeMap.set(theme.name, []);
+        }
+        themeMap.get(theme.name)!.push(movie);
+        break; // Only add to one theme
+      }
     }
-    decadeMap.get(decade)!.push(movie);
   }
 
   const groups: PotentialGroup[] = [];
 
-  for (const [decade, decadeMovies] of decadeMap) {
-    if (decadeMovies.length >= 4) {
-      const shuffled = [...decadeMovies].sort(() => Math.random() - 0.5);
+  for (const [themeName, themeMovies] of themeMap) {
+    if (themeMovies.length >= 4) {
+      const shuffled = [...themeMovies].sort(() => Math.random() - 0.5);
       groups.push({
         films: shuffled.slice(0, 4),
-        connection: `Films from the ${decade}s`,
-        type: 'decade',
+        connection: themeName,
+        type: 'theme',
+      });
+    }
+  }
+
+  return groups;
+}
+
+function analyzeProduction(movies: TMDBMovieDetails[]): PotentialGroup[] {
+  const productionMap = new Map<number, { label: string; movies: TMDBMovieDetails[] }>();
+
+  for (const movie of movies) {
+    const companies = (movie as any).production_companies || [];
+
+    for (const company of companies) {
+      const knownCompany = PRODUCTION_COMPANIES.find(pc => pc.id === company.id);
+      if (knownCompany) {
+        if (!productionMap.has(knownCompany.id)) {
+          productionMap.set(knownCompany.id, { label: knownCompany.label, movies: [] });
+        }
+        productionMap.get(knownCompany.id)!.movies.push(movie);
+        break; // Only add to one production company
+      }
+    }
+  }
+
+  const groups: PotentialGroup[] = [];
+
+  for (const [, data] of productionMap) {
+    if (data.movies.length >= 4) {
+      const shuffled = [...data.movies].sort(() => Math.random() - 0.5);
+      groups.push({
+        films: shuffled.slice(0, 4),
+        connection: data.label,
+        type: 'production',
       });
     }
   }
@@ -141,29 +212,9 @@ function analyzeDecades(movies: TMDBMovieDetails[]): PotentialGroup[] {
 function analyzeWordplay(movies: TMDBMovieDetails[]): PotentialGroup[] {
   const wordMap = new Map<string, TMDBMovieDetails[]>();
 
-  // Common English words to filter out
   const stopWords = new Set([
-    'the',
-    'a',
-    'an',
-    'and',
-    'or',
-    'but',
-    'in',
-    'on',
-    'at',
-    'to',
-    'for',
-    'of',
-    'with',
-    'by',
-    'from',
-    'as',
-    'is',
-    'was',
-    'are',
-    'been',
-    'be',
+    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of',
+    'with', 'by', 'from', 'as', 'is', 'was', 'are', 'been', 'be', 'part', 'movie',
   ]);
 
   for (const movie of movies) {
@@ -171,7 +222,7 @@ function analyzeWordplay(movies: TMDBMovieDetails[]): PotentialGroup[] {
       .toLowerCase()
       .replace(/[^a-z0-9\s]/g, '')
       .split(/\s+/)
-      .filter((word) => word.length > 3 && !stopWords.has(word));
+      .filter((word) => word.length > 4 && !stopWords.has(word)); // Increased min length to 5
 
     for (const word of words) {
       if (!wordMap.has(word)) {
@@ -184,7 +235,7 @@ function analyzeWordplay(movies: TMDBMovieDetails[]): PotentialGroup[] {
   const groups: PotentialGroup[] = [];
 
   for (const [word, wordMovies] of wordMap) {
-    if (wordMovies.length >= 4) {
+    if (wordMovies.length >= 4 && wordMovies.length <= 8) { // Not too common
       const shuffled = [...wordMovies].sort(() => Math.random() - 0.5);
       groups.push({
         films: shuffled.slice(0, 4),
@@ -204,18 +255,39 @@ function selectNonOverlappingGroups(
   const selected: PotentialGroup[] = [];
   const usedMovieIds = new Set<number>();
 
-  // Shuffle all groups to randomize selection
-  const shuffled = [...allGroups].sort(() => Math.random() - 0.5);
+  // Group potential groups by their color
+  const groupsByColor = new Map<string, PotentialGroup[]>();
 
-  for (const group of shuffled) {
+  for (const group of allGroups) {
+    const color = DIFFICULTY_COLORS[group.type].color;
+    if (!groupsByColor.has(color)) {
+      groupsByColor.set(color, []);
+    }
+    groupsByColor.get(color)!.push(group);
+  }
+
+  // Shuffle groups within each color to add variety
+  for (const [color, groups] of groupsByColor) {
+    groupsByColor.set(color, groups.sort(() => Math.random() - 0.5));
+  }
+
+  // Try to select one group of each color (yellow, green, blue, purple)
+  const requiredColors = ['yellow', 'green', 'blue', 'purple'];
+
+  for (const color of requiredColors) {
     if (selected.length >= count) break;
 
-    // Check if any film in this group is already used
-    const hasOverlap = group.films.some((film) => usedMovieIds.has(film.id));
+    const groupsOfColor = groupsByColor.get(color) || [];
 
-    if (!hasOverlap) {
-      selected.push(group);
-      group.films.forEach((film) => usedMovieIds.add(film.id));
+    // Find first group of this color that doesn't overlap with selected films
+    for (const group of groupsOfColor) {
+      const hasOverlap = group.films.some((film) => usedMovieIds.has(film.id));
+
+      if (!hasOverlap) {
+        selected.push(group);
+        group.films.forEach((film) => usedMovieIds.add(film.id));
+        break; // Move to next color
+      }
     }
   }
 
@@ -225,8 +297,9 @@ function selectNonOverlappingGroups(
 const DIFFICULTY_COLORS: Record<string, { difficulty: string; color: string }> = {
   director: { difficulty: 'easy', color: 'yellow' },
   actor: { difficulty: 'easy', color: 'yellow' },
-  genre: { difficulty: 'medium', color: 'green' },
-  decade: { difficulty: 'hard', color: 'blue' },
+  franchise: { difficulty: 'medium', color: 'green' },
+  theme: { difficulty: 'medium', color: 'green' },
+  production: { difficulty: 'hard', color: 'blue' },
   wordplay: { difficulty: 'hardest', color: 'purple' },
 };
 
@@ -299,26 +372,28 @@ export async function generatePuzzle(): Promise<{
   groups: Group[];
   films: Film[];
 }> {
-  // Fetch random pool of movies
+  // Fetch random pool of movies with extended details
   const moviePool = await tmdbService.getRandomMoviePool(200);
 
   // Analyze pool to find all potential groupings
   const directorGroups = analyzeDirectors(moviePool);
   const actorGroups = analyzeActors(moviePool);
-  const genreGroups = analyzeGenres(moviePool);
-  const decadeGroups = analyzeDecades(moviePool);
+  const franchiseGroups = analyzeFranchises(moviePool);
+  const themeGroups = analyzeThemes(moviePool);
+  const productionGroups = analyzeProduction(moviePool);
   const wordplayGroups = analyzeWordplay(moviePool);
 
   // Combine all potential groups
   const allPotentialGroups = [
     ...directorGroups,
     ...actorGroups,
-    ...genreGroups,
-    ...decadeGroups,
+    ...franchiseGroups,
+    ...themeGroups,
+    ...productionGroups,
     ...wordplayGroups,
   ];
 
-  // Select 4 non-overlapping groups
+  // Select 4 non-overlapping groups with priority for more interesting connections
   const selectedGroups = selectNonOverlappingGroups(allPotentialGroups, 4);
 
   // If we couldn't find 4 non-overlapping groups, retry
