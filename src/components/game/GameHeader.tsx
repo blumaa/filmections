@@ -20,7 +20,7 @@ export function GameHeader({
   onToggleTestMode,
 }: GameHeaderProps) {
   // @ts-ignore - Will be used for future feature
-  const [isTestmode, setIsTestmode] = useState(true);
+  const [isTestmode, setIsTestmode] = useState(testMode);
   const remainingMistakes = maxMistakes - mistakes;
 
   return (
