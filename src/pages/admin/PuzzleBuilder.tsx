@@ -17,26 +17,15 @@ import { useSavePuzzle } from '../../lib/supabase/storage/usePuzzleStorage';
 import type { StoredGroup, DifficultyColor, PuzzleInput } from '../../lib/supabase/storage';
 import { supabase } from '../../lib/supabase/client';
 import { useToast } from '../../providers/useToast';
+import { DIFFICULTY_COLORS, DIFFICULTY_LABELS } from '../../constants/difficulty';
 import './PuzzleBuilder.css';
 
 // Create storage instances
 const groupStorage = new SupabaseGroupStorage(supabase);
 const puzzleStorage = new SupabaseStorage(supabase);
 
-// Color configuration
+// Color order for puzzle building
 const colors: DifficultyColor[] = ['yellow', 'green', 'blue', 'purple'];
-const colorLabels: Record<DifficultyColor, string> = {
-  yellow: 'Easy',
-  green: 'Medium',
-  blue: 'Hard',
-  purple: 'Hardest',
-};
-const colorHex: Record<DifficultyColor, string> = {
-  yellow: '#f6c143',
-  green: '#6aaa64',
-  blue: '#85c0f9',
-  purple: '#b19cd9',
-};
 
 export function PuzzleBuilder() {
   const toast = useToast();
@@ -159,7 +148,7 @@ export function PuzzleBuilder() {
             {/* Slot Header */}
             <div
               className="slot-header"
-              style={{ borderTopColor: colorHex[color] }}
+              style={{ borderTopColor: DIFFICULTY_COLORS[color] }}
             >
               <Box
                 display="flex"
@@ -169,10 +158,10 @@ export function PuzzleBuilder() {
                 <Box display="flex" alignItems="center" gap="sm">
                   <div
                     className="color-dot"
-                    style={{ backgroundColor: colorHex[color] }}
+                    style={{ backgroundColor: DIFFICULTY_COLORS[color] }}
                   />
                   <Text variant="body" weight="medium">
-                    {colorLabels[color]}
+                    {DIFFICULTY_LABELS[color]}
                   </Text>
                 </Box>
                 <Text variant="caption">
@@ -249,7 +238,7 @@ export function PuzzleBuilder() {
                   size="md"
                   onClick={() => setActiveColor(color)}
                 >
-                  Select {colorLabels[color]} Group
+                  Select {DIFFICULTY_LABELS[color]} Group
                 </Button>
               )}
             </Box>
@@ -281,7 +270,7 @@ export function PuzzleBuilder() {
                 >
                   <div
                     className="preview-color"
-                    style={{ backgroundColor: colorHex[color] }}
+                    style={{ backgroundColor: DIFFICULTY_COLORS[color] }}
                   />
                   <Box display="flex" flexDirection="column">
                     <Text variant="body" weight="medium">

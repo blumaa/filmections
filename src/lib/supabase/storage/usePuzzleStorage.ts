@@ -51,8 +51,8 @@ export function useDailyPuzzle(
   return useQuery({
     queryKey: puzzleKeys.daily(date),
     queryFn: () => storage.getDailyPuzzle(date),
-    staleTime: 24 * 60 * 60 * 1000, // Cache for 24 hours (puzzle never changes)
-    gcTime: Infinity, // Never garbage collect
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes, then revalidate
+    gcTime: 30 * 60 * 1000, // Keep in memory for 30 minutes
     ...options,
   });
 }
@@ -170,12 +170,18 @@ export function useUpdatePuzzle(
         queryClient.setQueryData(puzzleKeys.detail(id), context.previous);
       }
     },
-    onSuccess: (data, { id }) => {
+    onSuccess: (data, { id, updates }) => {
       // Update cache with server response
       queryClient.setQueryData(puzzleKeys.detail(id), data);
 
       // Invalidate list queries
       queryClient.invalidateQueries({ queryKey: puzzleKeys.lists() });
+
+      // If publishing/unpublishing, invalidate daily puzzle cache
+      if (updates.status === 'published' || updates.status === 'approved' || updates.status === 'pending') {
+        // Invalidate all daily puzzle queries to force refetch
+        queryClient.invalidateQueries({ queryKey: [...puzzleKeys.all, 'daily'] });
+      }
     },
     ...options,
   });

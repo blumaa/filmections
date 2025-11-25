@@ -26,7 +26,7 @@ export function FilmTile({
       onClick={onClick}
       className={`film-tile ${isSelected ? "selected" : ""} ${isShaking && isSelected ? "shake" : ""}`}
     >
-      <Text variant="body-sm">{film.title}</Text>
+      <Text variant="caption">{film.title}</Text>
     </Box>
   );
 }

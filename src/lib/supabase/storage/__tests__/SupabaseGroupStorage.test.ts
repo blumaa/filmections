@@ -58,6 +58,7 @@ const createMockGroupInput = (connection: string): GroupInput => ({
 const createMockSupabase = () => {
   const mockSelect = vi.fn();
   const mockInsert = vi.fn();
+  const mockUpsert = vi.fn();
   const mockUpdate = vi.fn();
   const mockDelete = vi.fn();
   const mockEq = vi.fn();
@@ -69,6 +70,7 @@ const createMockSupabase = () => {
   const chainableMock = {
     select: mockSelect,
     insert: mockInsert,
+    upsert: mockUpsert,
     update: mockUpdate,
     delete: mockDelete,
     eq: mockEq,

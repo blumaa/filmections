@@ -95,7 +95,7 @@
       "id": "time-travel",
       "name": "Time Travel",
       "category": "plot",
-      "enabled": false,
+      "enabled": true,
       "keywords": ["time travel", "time machine", "temporal"],
       "difficulty": 2,
       "description": "Films featuring time travel as a plot element"

@@ -14,38 +14,17 @@ import {
   useUpdateGroup,
   useDeleteGroup,
 } from '../../lib/supabase/storage/useGroupStorage';
-import type { GroupListFilters, GroupStatus, DifficultyColor, DifficultyLevel } from '../../lib/supabase/storage';
+import type { GroupListFilters, GroupStatus, DifficultyColor } from '../../lib/supabase/storage';
 import { supabase } from '../../lib/supabase/client';
 import { useToast } from '../../providers/useToast';
+import { DIFFICULTY_COLORS, DIFFICULTY_LABELS, COLOR_TO_DIFFICULTY } from '../../constants/difficulty';
 import './GroupPool.css';
 
 // Create storage instance
 const storage = new SupabaseGroupStorage(supabase);
 
-// Color map for visual indicators
-const colorMap: Record<DifficultyColor, string> = {
-  yellow: '#f6c143',
-  green: '#6aaa64',
-  blue: '#85c0f9',
-  purple: '#b19cd9',
-};
-
-// Color to difficulty mapping
-const colorToDifficulty: Record<DifficultyColor, DifficultyLevel> = {
-  yellow: 'easy',
-  green: 'medium',
-  blue: 'hard',
-  purple: 'hardest',
-};
-
 // Available colors for editing
 const availableColors: DifficultyColor[] = ['yellow', 'green', 'blue', 'purple'];
-const colorLabels: Record<DifficultyColor, string> = {
-  yellow: 'Easy',
-  green: 'Medium',
-  blue: 'Hard',
-  purple: 'Hardest',
-};
 
 export function GroupPool() {
   const toast = useToast();
@@ -118,7 +97,7 @@ export function GroupPool() {
   };
 
   const handleSaveEdit = (id: string) => {
-    const difficulty = colorToDifficulty[editedColor];
+    const difficulty = COLOR_TO_DIFFICULTY[editedColor];
     updateMutation.mutate(
       { id, updates: { connection: editedConnection, color: editedColor, difficulty } },
       {
@@ -220,7 +199,7 @@ export function GroupPool() {
               {/* Color indicator bar */}
               <div
                 className="color-indicator"
-                style={{ backgroundColor: colorMap[group.color || 'green'] }}
+                style={{ backgroundColor: DIFFICULTY_COLORS[group.color || 'green'] }}
               />
 
               <Box display="flex" flexDirection="column" gap="sm" className="group-content">
@@ -242,9 +221,9 @@ export function GroupPool() {
                               key={color}
                               type="button"
                               className={`color-btn ${editedColor === color ? 'selected' : ''}`}
-                              style={{ backgroundColor: colorMap[color] }}
+                              style={{ backgroundColor: DIFFICULTY_COLORS[color] }}
                               onClick={() => setEditedColor(color)}
-                              title={colorLabels[color]}
+                              title={DIFFICULTY_LABELS[color]}
                             >
                               {editedColor === color && '✓'}
                             </button>

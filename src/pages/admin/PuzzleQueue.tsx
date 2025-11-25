@@ -13,6 +13,7 @@ import { SupabaseStorage } from '../../lib/supabase/storage/SupabaseStorage';
 import { supabase } from '../../lib/supabase/client';
 import { useToast } from '../../providers/useToast';
 import type { PuzzleStatus } from '../../lib/supabase/storage/IPuzzleStorage';
+import { DIFFICULTY_COLORS } from '../../constants/difficulty';
 import './PuzzleQueue.css';
 
 // Create storage instance
@@ -36,14 +37,6 @@ const STATUS_COLORS: Record<PuzzleStatus, string> = {
   approved: 'var(--color-success)',
   published: 'var(--color-info)',
   rejected: 'var(--color-error)',
-};
-
-// Color mapping for groups
-const colorHex: Record<string, string> = {
-  yellow: '#f6c143',
-  green: '#6aaa64',
-  blue: '#85c0f9',
-  purple: '#b19cd9',
 };
 
 export function PuzzleQueue() {
@@ -276,7 +269,7 @@ export function PuzzleQueue() {
                         <Box display="flex" alignItems="center" gap="sm">
                           <div
                             className="color-dot"
-                            style={{ backgroundColor: colorHex[group.color] || '#ccc' }}
+                            style={{ backgroundColor: DIFFICULTY_COLORS[group.color as keyof typeof DIFFICULTY_COLORS] || '#ccc' }}
                           />
                           <Text variant="caption" weight="medium">
                             {group.connection} ({group.difficulty})

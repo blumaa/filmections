@@ -1,59 +1,58 @@
 /**
  * Group Generator Admin Page
  *
- * Generates connection groups for the curated pool.
- * Uses the GroupGenerator service with configurable quality controls.
+ * Generates connection groups for the curated pool using Claude AI.
+ * Uses era-balanced pool for diverse films (1920s-present).
+ * Verifies AI claims against actual data.
  */
 
 import { useState } from 'react';
-import { Box, Heading, Text, Button } from '@mond-design-system/theme';
-import { GroupGenerator, type GroupGeneratorConfig, type GeneratedGroup } from '../../services/GroupGenerator';
-import type { TMDBMovieDetails } from '../../types';
-import { TMDBService } from '../../services/tmdb';
+import { Box, Heading, Text, Button, Spinner, Badge } from '@mond-design-system/theme';
+import {
+  AIGroupGenerator,
+  type GeneratedGroup,
+} from '../../services/AIGroupGenerator';
+import { HybridGroupGenerator, type FormattedGroup } from '../../services/HybridGroupGenerator';
+import { EraBalancedPoolBuilder } from '../../services/EraBalancedPoolBuilder';
 import { SupabaseGroupStorage } from '../../lib/supabase/storage/SupabaseGroupStorage';
 import { useSaveGroupBatch } from '../../lib/supabase/storage/useGroupStorage';
 import { supabase } from '../../lib/supabase/client';
-import {
-  DirectorAnalyzer,
-  ActorAnalyzer,
-  DecadeAnalyzer,
-  YearAnalyzer,
-  analyzerRegistry,
-} from '../../lib/puzzle-engine';
 import { useToast } from '../../providers/useToast';
+import { DIFFICULTY_COLORS } from '../../constants/difficulty';
 import './GroupGeneratorPage.css';
 
 // Create storage instance
 const groupStorage = new SupabaseGroupStorage(supabase);
 
-// Color mapping for display
-const colorHex: Record<string, string> = {
-  yellow: '#f6c143',
-  green: '#6aaa64',
-  blue: '#85c0f9',
-  purple: '#b19cd9',
+/**
+ * Config for hybrid generation
+ */
+interface GeneratorConfig {
+  moviePoolSize: number;
+  groupCount: number;
+  useHybrid: boolean; // Use deterministic + AI hybrid approach
+}
+
+const DEFAULT_CONFIG: GeneratorConfig = {
+  moviePoolSize: 200,
+  groupCount: 10,
+  useHybrid: true, // Default to hybrid for reliability
 };
 
-const DEFAULT_CONFIG: GroupGeneratorConfig = {
-  moviePoolSize: 200,
-  qualityThreshold: 35,
-  maxGroupsPerBatch: 50,
-  enabledAnalyzers: ['director', 'actor', 'decade', 'year'],
-  poolFilters: {
-    minYear: 1920,
-    maxYear: new Date().getFullYear(),
-    minVoteCount: 50,
-    minPopularity: 5,
-  },
-};
+// Extended type that can hold both deterministic and AI groups
+type DisplayGroup = (GeneratedGroup | FormattedGroup) & { source?: 'deterministic' | 'ai-thematic' };
 
 export function GroupGeneratorPage() {
   const toast = useToast();
-  const [config, setConfig] = useState<GroupGeneratorConfig>(DEFAULT_CONFIG);
+  const [config, setConfig] = useState<GeneratorConfig>(DEFAULT_CONFIG);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedGroups, setGeneratedGroups] = useState<GeneratedGroup[]>([]);
+  const [generatedGroups, setGeneratedGroups] = useState<DisplayGroup[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<string | null>(null);
+  const [tokensUsed, setTokensUsed] = useState<{ input: number; output: number } | null>(null);
+  const [filteredCount, setFilteredCount] = useState<number>(0);
+  const [eraDistribution, setEraDistribution] = useState<Record<string, number> | null>(null);
+  const [deterministicCount, setDeterministicCount] = useState<number>(0);
 
   // Mutation for saving groups to database
   const saveMutation = useSaveGroupBatch(groupStorage, {
@@ -75,28 +74,8 @@ export function GroupGeneratorPage() {
     },
   });
 
-  const updateConfig = (updates: Partial<GroupGeneratorConfig>) => {
+  const updateConfig = (updates: Partial<GeneratorConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }));
-  };
-
-  const updatePoolFilters = (updates: Partial<GroupGeneratorConfig['poolFilters']>) => {
-    setConfig((prev) => ({
-      ...prev,
-      poolFilters: { ...prev.poolFilters, ...updates },
-    }));
-  };
-
-  const toggleAnalyzer = (analyzer: string) => {
-    setConfig((prev) => {
-      const enabled = prev.enabledAnalyzers || [];
-      const isEnabled = enabled.includes(analyzer);
-      return {
-        ...prev,
-        enabledAnalyzers: isEnabled
-          ? enabled.filter((a) => a !== analyzer)
-          : [...enabled, analyzer],
-      };
-    });
   };
 
   const handleSaveToPool = () => {
@@ -104,9 +83,12 @@ export function GroupGeneratorPage() {
       toast.showError('No groups to save', 'Generate groups first');
       return;
     }
-    const groupInputs = generatedGroups.map(GroupGenerator.toGroupInput);
-    console.log('Saving groups:', groupInputs);
+    const groupInputs = generatedGroups.map(AIGroupGenerator.toGroupInput);
     saveMutation.mutate(groupInputs);
+  };
+
+  const handleRemoveGroup = (index: number) => {
+    setGeneratedGroups((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleGenerate = async () => {
@@ -114,60 +96,70 @@ export function GroupGeneratorPage() {
     setError(null);
     setProgress(null);
     setGeneratedGroups([]);
+    setTokensUsed(null);
+    setFilteredCount(0);
+    setEraDistribution(null);
+    setDeterministicCount(0);
 
     try {
-      // Register analyzers
-      analyzerRegistry.clear();
-      analyzerRegistry.register(new DirectorAnalyzer());
-      analyzerRegistry.register(new ActorAnalyzer());
-      analyzerRegistry.register(new DecadeAnalyzer());
-      analyzerRegistry.register(new YearAnalyzer());
+      // Build era-balanced pool (equal distribution across 5 eras)
+      setProgress('Building era-balanced film pool (1920s-present)...');
+      const poolBuilder = new EraBalancedPoolBuilder();
+      const poolResult = await poolBuilder.buildPool(config.moviePoolSize);
 
-      // Initialize TMDB service
-      const tmdb = new TMDBService();
+      setEraDistribution(poolResult.eraDistribution);
+      setProgress(
+        `Pool built: ${poolResult.totalFetched} films across ${Object.keys(poolResult.eraDistribution).length} eras`
+      );
 
-      // Fetch movie pool from TMDB
-      setProgress('Fetching movies from TMDB...');
-      const poolSize = config.moviePoolSize || 200;
-      const moviesPerPage = 20;
-      const pagesToFetch = Math.ceil(poolSize / moviesPerPage);
+      if (config.useHybrid) {
+        // HYBRID APPROACH: Deterministic discovery first
+        setProgress('Finding guaranteed connections (director, actor, title patterns)...');
 
-      const moviePromises: Promise<TMDBMovieDetails>[] = [];
-
-      // Fetch movies from multiple pages
-      for (let page = 1; page <= pagesToFetch; page++) {
-        const response = await tmdb.discoverMovies({
-          page,
-          sort_by: 'popularity.desc',
-          minYear: config.poolFilters?.minYear,
-          maxYear: config.poolFilters?.maxYear,
-          vote_count_gte: config.poolFilters?.minVoteCount,
+        const hybridGenerator = new HybridGroupGenerator({
+          maxDeterministicGroups: config.groupCount,
+          preferDiversity: true,
         });
 
-        // Get details for each movie (includes credits)
-        for (const movie of response.results.slice(0, moviesPerPage)) {
-          moviePromises.push(tmdb.getMovieDetails(movie.id));
+        const hybridResult = await hybridGenerator.generate(poolResult.films, config.groupCount);
+
+        setGeneratedGroups(hybridResult.groups);
+        setDeterministicCount(hybridResult.deterministicCount);
+
+        const statusMessage = `Found ${hybridResult.deterministicCount} guaranteed connections (100% verified)`;
+        setProgress(statusMessage);
+      } else {
+        // AI-ONLY APPROACH (original behavior)
+        setProgress(
+          `Sending ${poolResult.films.length} films to AI for analysis (requesting ${config.groupCount} groups)...`
+        );
+
+        const generator = new AIGroupGenerator({
+          groupCount: config.groupCount,
+          preferCreative: true,
+        });
+        const result = await generator.generateGroups(poolResult.films, config.groupCount);
+
+        setGeneratedGroups(result.groups);
+        setTokensUsed(result.tokensUsed || null);
+        setFilteredCount(result.filteredCount || 0);
+
+        let statusMessage = `Generated ${result.groups.length} verified groups`;
+        if (result.filteredCount) {
+          statusMessage += ` (${result.filteredCount} rejected by validation/verification)`;
         }
+        setProgress(statusMessage);
       }
-
-      setProgress(`Fetching details for ${moviePromises.length} movies...`);
-      const moviePool = await Promise.all(moviePromises);
-
-      // Create group generator with configuration
-      setProgress('Generating groups...');
-      const generator = new GroupGenerator(config);
-
-      // Generate groups
-      const result = await generator.generateGroups(moviePool);
-
-      setGeneratedGroups(result.groups);
-      setProgress(
-        `Found ${result.totalFound} potential groups, returning ${result.groups.length} groups. ` +
-        `Filtered: ${result.filteredCount}`
-      );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate groups');
+      const message = err instanceof Error ? err.message : 'Failed to generate groups';
+      setError(message);
       setProgress(null);
+
+      if (message.includes('API key')) {
+        setError(
+          'API key not configured. Add VITE_ANTHROPIC_API_KEY to your .env.local file.'
+        );
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -177,10 +169,10 @@ export function GroupGeneratorPage() {
     <Box display="flex" flexDirection="column" gap="lg" padding="4">
       <Box display="flex" flexDirection="column" gap="sm">
         <Heading level={1} size="2xl">
-          Group Generator
+          AI Group Generator
         </Heading>
         <Text variant="body">
-          Generate connection groups for the curated pool
+          Generate creative connection groups using Claude AI
         </Text>
       </Box>
 
@@ -189,163 +181,129 @@ export function GroupGeneratorPage() {
         <Box className="generator-section">
           <Box display="flex" flexDirection="column" gap="md">
             <Heading level={2} size="lg">
-              Movie Pool Settings
+              Era-Balanced Pool
             </Heading>
 
             <Box display="flex" flexDirection="column" gap="xs">
               <label htmlFor="poolSize">
                 <Text variant="body" weight="medium">
-                  Pool Size: {config.moviePoolSize}
+                  Pool Size: {config.moviePoolSize} movies
                 </Text>
               </label>
               <input
                 id="poolSize"
                 type="range"
-                min="50"
+                min="100"
                 max="500"
-                step="50"
+                step="25"
                 value={config.moviePoolSize}
                 onChange={(e) => updateConfig({ moviePoolSize: Number(e.target.value) })}
                 className="range-input"
               />
-              <Text variant="caption">Number of movies to consider</Text>
+              <Text variant="caption">More movies = more potential connections</Text>
             </Box>
 
-            <Box display="flex" gap="md">
-              <div style={{ flex: 1 }}>
-                <Box display="flex" flexDirection="column" gap="xs">
-                  <label htmlFor="minYear">
-                    <Text variant="body" weight="medium">
-                      Min Year
-                    </Text>
-                  </label>
-                  <input
-                    id="minYear"
-                    type="number"
-                    min="1900"
-                    max={new Date().getFullYear()}
-                    value={config.poolFilters?.minYear || 1980}
-                    onChange={(e) => updatePoolFilters({ minYear: Number(e.target.value) })}
-                    className="number-input"
-                  />
-                </Box>
-              </div>
-
-              <div style={{ flex: 1 }}>
-                <Box display="flex" flexDirection="column" gap="xs">
-                  <label htmlFor="maxYear">
-                    <Text variant="body" weight="medium">
-                      Max Year
-                    </Text>
-                  </label>
-                  <input
-                    id="maxYear"
-                    type="number"
-                    min="1900"
-                    max={new Date().getFullYear()}
-                    value={config.poolFilters?.maxYear || new Date().getFullYear()}
-                    onChange={(e) => updatePoolFilters({ maxYear: Number(e.target.value) })}
-                    className="number-input"
-                  />
-                </Box>
-              </div>
+            <Box className="ai-info-box" padding="3">
+              <Text variant="caption">
+                Films are fetched with equal distribution across 5 eras:
+              </Text>
+              <Text variant="caption">
+                Silent/Classic (1920-1959) | New Hollywood (1960-1979) |
+                Blockbuster (1980-1999) | Modern (2000-2014) | Contemporary (2015+)
+              </Text>
             </Box>
+
+            {eraDistribution && (
+              <Box className="era-distribution" padding="2">
+                <Text variant="caption" weight="medium">Pool breakdown:</Text>
+                {Object.entries(eraDistribution).map(([era, count]) => (
+                  <Text key={era} variant="caption">
+                    {era}: {count} films
+                  </Text>
+                ))}
+              </Box>
+            )}
+          </Box>
+        </Box>
+
+        {/* AI Generation Settings */}
+        <Box className="generator-section">
+          <Box display="flex" flexDirection="column" gap="md">
+            <Heading level={2} size="lg">
+              AI Generation Settings
+            </Heading>
 
             <Box display="flex" flexDirection="column" gap="xs">
-              <label htmlFor="minVotes">
+              <label htmlFor="groupCount">
                 <Text variant="body" weight="medium">
-                  Min Vote Count: {config.poolFilters?.minVoteCount || 50}
+                  Groups to Generate: {config.groupCount}
                 </Text>
               </label>
               <input
-                id="minVotes"
+                id="groupCount"
                 type="range"
-                min="0"
-                max="1000"
-                step="10"
-                value={config.poolFilters?.minVoteCount || 50}
-                onChange={(e) => updatePoolFilters({ minVoteCount: Number(e.target.value) })}
-                className="range-input"
-              />
-              <Text variant="caption">Minimum number of user votes</Text>
-            </Box>
-
-            <Box display="flex" flexDirection="column" gap="xs">
-              <label htmlFor="minPopularity">
-                <Text variant="body" weight="medium">
-                  Min Popularity: {config.poolFilters?.minPopularity || 5}
-                </Text>
-              </label>
-              <input
-                id="minPopularity"
-                type="range"
-                min="0"
-                max="100"
+                min="4"
+                max="20"
                 step="1"
-                value={config.poolFilters?.minPopularity || 5}
-                onChange={(e) => updatePoolFilters({ minPopularity: Number(e.target.value) })}
+                value={config.groupCount}
+                onChange={(e) => updateConfig({ groupCount: Number(e.target.value) })}
                 className="range-input"
               />
-              <Text variant="caption">TMDB popularity score</Text>
+              <Text variant="caption">
+                AI will find this many unique 4-film connections
+              </Text>
             </Box>
-          </Box>
-        </Box>
 
-        {/* Analyzer Toggles */}
-        <Box className="generator-section">
-          <Box display="flex" flexDirection="column" gap="md">
-            <Heading level={2} size="lg">
-              Enabled Analyzers
-            </Heading>
-            <Text variant="caption">
-              Select which analyzers to use for finding connections
-            </Text>
-
-            <Box display="flex" flexDirection="column" gap="sm">
-              {['director', 'actor', 'decade', 'year'].map((analyzer) => (
-                <label key={analyzer} className="analyzer-toggle">
-                  <input
-                    type="checkbox"
-                    checked={config.enabledAnalyzers?.includes(analyzer) || false}
-                    onChange={() => toggleAnalyzer(analyzer)}
-                    className="checkbox-input"
-                  />
-                  <span className="analyzer-label">
-                    <Text variant="body">
-                      {analyzer.charAt(0).toUpperCase() + analyzer.slice(1)}
-                    </Text>
-                  </span>
-                </label>
-              ))}
-            </Box>
-          </Box>
-        </Box>
-
-        {/* Generation Settings */}
-        <Box className="generator-section">
-          <Box display="flex" flexDirection="column" gap="md">
-            <Heading level={2} size="lg">
-              Generation Settings
-            </Heading>
-
-            <Box display="flex" flexDirection="column" gap="xs">
-              <label htmlFor="maxGroups">
-                <Text variant="body" weight="medium">
-                  Max Groups: {config.maxGroupsPerBatch}
-                </Text>
-              </label>
+            <label className="analyzer-toggle">
               <input
-                id="maxGroups"
-                type="range"
-                min="10"
-                max="100"
-                step="5"
-                value={config.maxGroupsPerBatch}
-                onChange={(e) => updateConfig({ maxGroupsPerBatch: Number(e.target.value) })}
-                className="range-input"
+                type="checkbox"
+                className="checkbox-input"
+                checked={config.useHybrid}
+                onChange={(e) => updateConfig({ useHybrid: e.target.checked })}
               />
-              <Text variant="caption">Maximum groups to generate</Text>
+              <span className="analyzer-label">
+                <Text variant="body" weight="medium">
+                  Use Hybrid Mode (Recommended)
+                </Text>
+                <Text variant="caption">
+                  Deterministic discovery finds guaranteed connections first
+                </Text>
+              </span>
+            </label>
+
+            <Box className="ai-info-box" padding="3">
+              <Text variant="caption">
+                {config.useHybrid
+                  ? 'Hybrid mode: Finds director, actor, and title pattern connections that are 100% verified.'
+                  : 'AI mode: AI suggests connections with verification. Some may fail verification.'}
+              </Text>
             </Box>
+
+            {tokensUsed && (
+              <Box className="token-usage" padding="2">
+                <Text variant="caption">
+                  Tokens used: {tokensUsed.input} input + {tokensUsed.output} output
+                  (est. ${((tokensUsed.input * 0.003 + tokensUsed.output * 0.015) / 1000).toFixed(3)})
+                </Text>
+              </Box>
+            )}
+
+            {filteredCount > 0 && (
+              <Box className="filtered-notice" padding="2">
+                <Text variant="caption">
+                  {filteredCount} group{filteredCount !== 1 ? 's' : ''} filtered for violating rules
+                  (franchises, trivial patterns, etc.)
+                </Text>
+              </Box>
+            )}
+
+            {deterministicCount > 0 && (
+              <Box className="ai-info-box" padding="2">
+                <Text variant="caption">
+                  {deterministicCount} guaranteed connections found (director, actor, title patterns)
+                </Text>
+              </Box>
+            )}
           </Box>
         </Box>
 
@@ -360,9 +318,16 @@ export function GroupGeneratorPage() {
                 variant="primary"
                 size="md"
                 onClick={handleGenerate}
-                disabled={isGenerating || (config.enabledAnalyzers?.length || 0) === 0}
+                disabled={isGenerating}
               >
-                {isGenerating ? 'Generating...' : 'Generate Groups'}
+                {isGenerating ? (
+                  <Box display="flex" alignItems="center" gap="sm">
+                    <Spinner size="sm" />
+                    <span>Generating...</span>
+                  </Box>
+                ) : (
+                  'Generate with AI'
+                )}
               </Button>
             </Box>
 
@@ -391,20 +356,47 @@ export function GroupGeneratorPage() {
                                 width: 12,
                                 height: 12,
                                 borderRadius: '50%',
-                                backgroundColor: colorHex[group.color],
+                                backgroundColor: DIFFICULTY_COLORS[group.color],
                               }}
                             />
                             <Text variant="body" weight="medium">
                               {group.connection}
                             </Text>
+                            <span className="verification-badge verified" title="Verified against actual data">
+                              ✓
+                            </span>
                           </Box>
-                          <Text variant="caption">
-                            Score: {group.difficultyScore} | {group.difficulty}
-                          </Text>
+                          <Box display="flex" alignItems="center" gap="sm">
+                            {group.source === 'deterministic' && (
+                              <Badge variant="default" size="sm">
+                                guaranteed
+                              </Badge>
+                            )}
+                            {group.category && (
+                              <Badge variant="outline" size="sm">
+                                {group.category}
+                              </Badge>
+                            )}
+                            <Text variant="caption">
+                              {group.difficulty}
+                            </Text>
+                            <button
+                              className="remove-group-btn"
+                              onClick={() => handleRemoveGroup(index)}
+                              aria-label="Remove group"
+                            >
+                              &times;
+                            </button>
+                          </Box>
                         </Box>
                         <Text variant="caption">
-                          {group.films.map((f) => f.title).join(', ')}
+                          {group.films.map((f) => `${f.title} (${f.year})`).join(', ')}
                         </Text>
+                        {group.explanation && (
+                          <span className="explanation-text">
+                            <Text variant="caption">{group.explanation}</Text>
+                          </span>
+                        )}
                       </Box>
                     </Box>
                   ))}
@@ -417,15 +409,28 @@ export function GroupGeneratorPage() {
                     onClick={handleSaveToPool}
                     disabled={saveMutation.isPending}
                   >
-                    {saveMutation.isPending ? 'Saving...' : 'Save to Pool'}
+                    {saveMutation.isPending ? (
+                      <Box display="flex" alignItems="center" gap="sm">
+                        <Spinner size="sm" />
+                        <span>Saving...</span>
+                      </Box>
+                    ) : (
+                      `Save ${generatedGroups.length} Groups to Pool`
+                    )}
                   </Button>
                 </Box>
               </>
+            ) : isGenerating ? (
+              <Box className="empty-state" display="flex" flexDirection="column" alignItems="center" gap="md">
+                <Spinner size="lg" />
+                <Text variant="body">Generating groups...</Text>
+                {progress && <Text variant="caption">{progress}</Text>}
+              </Box>
             ) : (
               <Box className="empty-state">
                 <Text variant="body">No groups generated yet</Text>
                 <Text variant="caption">
-                  Configure settings and click Generate Groups to find connections
+                  Configure settings and click Generate with AI to find creative connections
                 </Text>
               </Box>
             )}
