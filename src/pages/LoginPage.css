@@ -1,0 +1,40 @@
+.login-container {
+  min-height: 100vh;
+  background: var(--mond-colors-gray-50);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background: var(--mond-colors-white);
+  border-radius: var(--mond-radii-md);
+  box-shadow: var(--mond-shadows-md);
+}
+
+.login-form {
+  width: 100%;
+}
+
+.login-error {
+  background: var(--mond-colors-red-50);
+  border: 1px solid var(--mond-colors-red-200);
+  border-radius: var(--mond-radii-sm);
+  color: var(--mond-colors-red-700);
+}
+
+@media (prefers-color-scheme: dark) {
+  .login-container {
+    background: var(--mond-colors-gray-900);
+  }
+
+  .login-card {
+    background: var(--mond-colors-gray-800);
+  }
+
+  .login-error {
+    background: var(--mond-colors-red-900);
+    border-color: var(--mond-colors-red-700);
+    color: var(--mond-colors-red-200);
+  }
+}

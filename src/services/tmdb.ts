@@ -27,10 +27,13 @@ export class TMDBService {
 
   async discoverMovies(params: {
     year?: number;
+    minYear?: number;
+    maxYear?: number;
     with_genres?: string;
     with_people?: string;
     sort_by?: string;
     page?: number;
+    vote_count_gte?: number;
   }): Promise<TMDBDiscoverResponse> {
     const queryParams: Record<string, string> = {
       page: String(params.page || 1),
@@ -38,8 +41,11 @@ export class TMDBService {
     };
 
     if (params.year) queryParams.year = String(params.year);
+    if (params.minYear) queryParams['primary_release_date.gte'] = `${params.minYear}-01-01`;
+    if (params.maxYear) queryParams['primary_release_date.lte'] = `${params.maxYear}-12-31`;
     if (params.with_genres) queryParams.with_genres = params.with_genres;
     if (params.with_people) queryParams.with_people = params.with_people;
+    if (params.vote_count_gte) queryParams['vote_count.gte'] = String(params.vote_count_gte);
 
     return this.fetch<TMDBDiscoverResponse>('/discover/movie', queryParams);
   }

@@ -30,3 +30,36 @@
   opacity: 0.8;
   margin-top: 0.25rem;
 }
+
+.share-section {
+  background-color: var(--mond-colors-gray-100);
+  margin-bottom: 1rem;
+}
+
+.share-text {
+  font-family: monospace;
+  font-size: 1.125rem;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.stats-section {
+  background-color: var(--mond-colors-gray-100);
+  margin-bottom: 1rem;
+}
+
+.stat-number {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: bold;
+}
+
+@media (prefers-color-scheme: dark) {
+  .share-section {
+    background-color: var(--mond-colors-gray-800);
+  }
+
+  .stats-section {
+    background-color: var(--mond-colors-gray-800);
+  }
+}

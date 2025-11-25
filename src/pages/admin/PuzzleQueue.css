@@ -1,0 +1,91 @@
+/* Puzzle Queue Styles */
+
+.status-tabs {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-2);
+}
+
+.status-tab {
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s;
+  color: var(--color-text-secondary);
+}
+
+.status-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.status-tab.active {
+  border-bottom-color: var(--color-primary);
+  color: var(--color-text-primary);
+}
+
+.puzzle-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: box-shadow 0.2s;
+}
+
+.puzzle-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.group-preview {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.error-box {
+  padding: var(--space-3);
+  background: var(--color-error-light, #fee);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-sm);
+  color: var(--color-error);
+}
+
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.reject-btn-wrapper button {
+  color: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
+}
+
+.reject-btn-wrapper button:hover {
+  background: var(--color-danger) !important;
+  color: white !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .puzzle-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}

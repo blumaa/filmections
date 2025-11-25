@@ -1,17 +1,16 @@
 import { create } from 'zustand';
-import type { GameState } from '../types';
-import { generatePuzzle, generateTestPuzzle, shuffleArray } from '../services/puzzleGenerator';
-import { recentContentService } from '../services/recentContent';
+import type { GameState, Group, Film } from '../types';
+import { shuffleArray } from '../services/puzzleGenerator';
 
 interface GameActions {
   selectFilm: (filmId: number) => void;
   deselectAll: () => void;
   submitGuess: () => void;
   shuffleFilms: () => void;
-  newGame: () => Promise<void>;
+  initializeGame: (films: Film[], groups: Group[], puzzleDate: string) => void;
+  restoreCompletedGame: (groups: Group[], won: boolean, mistakes: number) => void;
   resetGame: () => void;
   clearNotification: () => void;
-  toggleTestMode: () => Promise<void>;
 }
 
 type GameStore = GameState & GameActions;
@@ -30,8 +29,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   gameStatus: 'playing',
   isLoading: false,
   notification: null,
-  testMode: false,
   isShaking: false,
+  puzzleDate: null,
 
   // Actions
   selectFilm: (filmId: number) => {
@@ -122,13 +121,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
         previousGuesses: [...previousGuesses, sortedGuess],
         gameStatus: isGameWon ? 'won' : 'playing',
       });
-
-      // Save used content when game is won
-      if (isGameWon) {
-        const allFilmIds = groups.flatMap(g => g.films.map(f => f.id));
-        const allConnections = groups.map(g => g.connection);
-        recentContentService.saveGame(allFilmIds, allConnections);
-      }
     } else {
       // Wrong guess
       const newMistakes = mistakes + 1;
@@ -144,13 +136,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isShaking: true,
       });
 
-      // Save used content when game is lost
-      if (isGameLost) {
-        const allFilmIds = groups.flatMap(g => g.films.map(f => f.id));
-        const allConnections = groups.map(g => g.connection);
-        recentContentService.saveGame(allFilmIds, allConnections);
-      }
-
       // Reset shake animation after 500ms
       setTimeout(() => set({ isShaking: false }), 500);
     }
@@ -161,27 +146,49 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ films: shuffleArray(films) });
   },
 
-  newGame: async () => {
-    const { testMode } = get();
-    set({ isLoading: true });
+  /**
+   * Initialize game with puzzle data from storage.
+   * Replaces the old newGame() method which generated puzzles.
+   *
+   * @param films - Shuffled array of films
+   * @param groups - Array of groups
+   * @param puzzleDate - Date of puzzle in YYYY-MM-DD format
+   */
+  initializeGame: (films: Film[], groups: Group[], puzzleDate: string) => {
+    set({
+      films: shuffleArray(films),
+      groups,
+      selectedFilmIds: [],
+      foundGroups: [],
+      previousGuesses: [],
+      mistakes: 0,
+      gameStatus: 'playing',
+      isLoading: false,
+      puzzleDate,
+    });
+  },
 
-    try {
-      const puzzle = testMode ? await generateTestPuzzle() : await generatePuzzle();
-
-      set({
-        films: puzzle.films,
-        groups: puzzle.groups,
-        selectedFilmIds: [],
-        foundGroups: [],
-        previousGuesses: [],
-        mistakes: 0,
-        gameStatus: 'playing',
-        isLoading: false,
-      });
-    } catch (error) {
-      console.error('Failed to generate puzzle:', error);
-      set({ isLoading: false });
-    }
+  /**
+   * Restore a completed game state (for users who already played today).
+   * Shows the final state without allowing replay.
+   *
+   * @param groups - Array of groups from the puzzle
+   * @param won - Whether user won
+   * @param mistakes - Number of mistakes made
+   */
+  restoreCompletedGame: (groups: Group[], won: boolean, mistakes: number) => {
+    set({
+      films: [],
+      groups,
+      selectedFilmIds: [],
+      foundGroups: groups,
+      previousGuesses: [],
+      mistakes,
+      gameStatus: won ? 'won' : 'lost',
+      isLoading: false,
+      notification: null,
+      isShaking: false,
+    });
   },
 
   resetGame: () => {
@@ -195,19 +202,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
       gameStatus: 'playing',
       isLoading: false,
       notification: null,
-      testMode: true,
       isShaking: false,
+      puzzleDate: null,
     });
   },
 
   clearNotification: () => {
     set({ notification: null });
-  },
-
-  toggleTestMode: async () => {
-    const { testMode, newGame } = get();
-    set({ testMode: !testMode });
-    // Start a new game with the new mode
-    await newGame();
   },
 }));

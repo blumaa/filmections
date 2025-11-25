@@ -1,0 +1,2 @@
+- we're using bun in this project. use it to run tests and the dev server, etc.
+- always use bun run test when testing

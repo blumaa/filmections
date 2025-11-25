@@ -1,0 +1,78 @@
+.admin-layout {
+  min-height: 100vh;
+  background: var(--mond-colors-gray-50);
+}
+
+.admin-sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: var(--mond-colors-white);
+  border-right: 1px solid var(--mond-colors-gray-200);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.admin-user-email {
+  font-size: 0.875rem;
+  color: var(--mond-colors-gray-600);
+}
+
+.admin-nav {
+  width: 100%;
+}
+
+.admin-nav-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: var(--mond-radii-sm);
+  text-decoration: none;
+  color: var(--mond-colors-gray-700);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.admin-nav-link:hover {
+  background: var(--mond-colors-gray-100);
+  color: var(--mond-colors-gray-900);
+}
+
+.admin-nav-link.active {
+  background: var(--mond-colors-blue-50);
+  color: var(--mond-colors-blue-700);
+}
+
+.admin-main {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .admin-layout {
+    background: var(--mond-colors-gray-900);
+  }
+
+  .admin-sidebar {
+    background: var(--mond-colors-gray-800);
+    border-right-color: var(--mond-colors-gray-700);
+  }
+
+  .admin-user-email {
+    color: var(--mond-colors-gray-400);
+  }
+
+  .admin-nav-link {
+    color: var(--mond-colors-gray-300);
+  }
+
+  .admin-nav-link:hover {
+    background: var(--mond-colors-gray-700);
+    color: var(--mond-colors-white);
+  }
+
+  .admin-nav-link.active {
+    background: var(--mond-colors-blue-900);
+    color: var(--mond-colors-blue-200);
+  }
+}

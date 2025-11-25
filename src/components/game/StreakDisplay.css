@@ -1,0 +1,11 @@
+.streak-display {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.streak-emoji {
+  font-size: 1.25rem;
+  line-height: 1;
+}

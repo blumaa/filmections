@@ -1,27 +1,7 @@
-'use client';
-
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ToastContainer } from '@mond-design-system/theme/client';
 import type { ToastData, ToastPosition } from '@mond-design-system/theme/client';
-
-interface ToastContextValue {
-  showSuccess: (title: string, message?: string) => void;
-  showError: (title: string, message?: string) => void;
-  showWarning: (title: string, message?: string) => void;
-  showInfo: (title: string, message?: string) => void;
-  dismissToast: (id: string) => void;
-  clearAllToasts: () => void;
-}
-
-const ToastContext = createContext<ToastContextValue | undefined>(undefined);
-
-export function useToast(): ToastContextValue {
-  const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
-  return context;
-}
+import { ToastContext, ToastContextValue } from './useToast';
 
 interface ToastProviderProps {
   children?: React.ReactNode;

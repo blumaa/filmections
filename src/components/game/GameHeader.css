@@ -4,17 +4,16 @@
 
 .game-header-subtitle {
   text-align: center;
-  opacity: 0.8;
 }
 
 @media (max-width: 640px) {
-  .game-header-title h1 {
-    font-size: 1.5rem;
-  }
+  /* .game-header-title h1 { */
+  /*   font-size: 1.5rem; */
+  /* } */
 
-  .game-header-subtitle {
-    font-size: 0.875rem;
-  }
+  /* .game-header-subtitle { */
+  /*   font-size: 0.875rem; */
+  /* } */
 }
 
 .mistakes-dots {
@@ -28,11 +27,11 @@
   height: 12px;
   border-radius: 50%;
   transition: background-color 0.2s ease;
+  background-color: red;
 }
 
 .mistake-dot.filled {
-  background-color: var(--mond-surface-primary);
-  border: 2px solid var(--mond-border-primary);
+  background-color: var(--mond-border-primary);
 }
 
 .mistake-dot.empty {

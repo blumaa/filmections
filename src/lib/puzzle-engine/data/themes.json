@@ -1,0 +1,455 @@
+{
+  "themes": [
+    {
+      "id": "bw-films",
+      "name": "Black and White Films",
+      "category": "visual",
+      "enabled": true,
+      "keywords": [],
+      "difficulty": 2,
+      "description": "Classic films shot entirely in black and white"
+    },
+    {
+      "id": "one-word-titles",
+      "name": "One-Word Titles",
+      "category": "visual",
+      "enabled": true,
+      "keywords": [],
+      "difficulty": 3,
+      "description": "Films with titles consisting of a single word"
+    },
+    {
+      "id": "numbers-in-title",
+      "name": "Numbers in Title",
+      "category": "visual",
+      "enabled": true,
+      "keywords": [],
+      "difficulty": 3,
+      "description": "Films with numbers in their titles"
+    },
+    {
+      "id": "color-in-title",
+      "name": "Color in Title",
+      "category": "visual",
+      "enabled": true,
+      "keywords": ["red", "blue", "green", "black", "white", "yellow", "orange", "purple", "pink", "brown", "gray", "grey", "silver", "gold"],
+      "difficulty": 2,
+      "description": "Films with color words in their titles",
+      "titleOnly": true
+    },
+    {
+      "id": "remakes",
+      "name": "Remakes",
+      "category": "visual",
+      "enabled": true,
+      "keywords": ["remake", "reimagining", "based on"],
+      "difficulty": 4,
+      "description": "Films that are remakes of earlier movies"
+    },
+    {
+      "id": "anthology-films",
+      "name": "Anthology Films",
+      "category": "visual",
+      "enabled": true,
+      "keywords": ["anthology", "stories", "segments", "vignettes"],
+      "difficulty": 4,
+      "description": "Films made up of multiple separate stories"
+    },
+    {
+      "id": "silent-films",
+      "name": "Silent Era",
+      "category": "visual",
+      "enabled": true,
+      "keywords": ["silent"],
+      "difficulty": 4,
+      "description": "Films from the silent film era"
+    },
+    {
+      "id": "foreign-language",
+      "name": "Foreign Language Films",
+      "category": "visual",
+      "enabled": true,
+      "keywords": [],
+      "difficulty": 3,
+      "description": "Films primarily in a non-English language"
+    },
+    {
+      "id": "documentaries",
+      "name": "Documentaries",
+      "category": "visual",
+      "enabled": true,
+      "keywords": ["documentary", "true story", "real-life"],
+      "difficulty": 2,
+      "description": "Non-fiction documentary films"
+    },
+    {
+      "id": "musicals",
+      "name": "Musical Films",
+      "category": "visual",
+      "enabled": true,
+      "keywords": ["musical", "singing", "dance", "songs"],
+      "difficulty": 2,
+      "description": "Films featuring musical numbers and songs"
+    },
+    {
+      "id": "time-travel",
+      "name": "Time Travel",
+      "category": "plot",
+      "enabled": false,
+      "keywords": ["time travel", "time machine", "temporal"],
+      "difficulty": 2,
+      "description": "Films featuring time travel as a plot element"
+    },
+    {
+      "id": "heist",
+      "name": "Heist Films",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["heist", "robbery", "steal", "vault", "crew", "job", "con"],
+      "difficulty": 2,
+      "description": "Films centered around elaborate thefts or cons"
+    },
+    {
+      "id": "revenge",
+      "name": "Revenge Stories",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["revenge", "vengeance", "payback", "retribution"],
+      "difficulty": 2,
+      "description": "Films driven by a quest for revenge"
+    },
+    {
+      "id": "amnesia",
+      "name": "Amnesia/Memory Loss",
+      "category": "plot",
+      "enabled": false,
+      "keywords": ["amnesia", "memory loss"],
+      "difficulty": 3,
+      "description": "Films featuring characters with memory loss"
+    },
+    {
+      "id": "unreliable-narrator",
+      "name": "Unreliable Narrator",
+      "category": "plot",
+      "enabled": false,
+      "keywords": ["unreliable narrator", "plot twist"],
+      "difficulty": 4,
+      "description": "Films with narrators or perspectives that prove unreliable"
+    },
+    {
+      "id": "mistaken-identity",
+      "name": "Mistaken Identity",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["mistaken", "identity", "imposter", "double", "disguise"],
+      "difficulty": 3,
+      "description": "Films built around cases of mistaken identity"
+    },
+    {
+      "id": "prison",
+      "name": "Prison Films",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["prison", "jail", "penitentiary", "escape", "inmate", "cell"],
+      "difficulty": 2,
+      "description": "Films set in or centered around prisons"
+    },
+    {
+      "id": "survival",
+      "name": "Survival Stories",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["survival", "stranded", "wilderness", "survive", "island", "desert"],
+      "difficulty": 2,
+      "description": "Films about characters fighting to survive"
+    },
+    {
+      "id": "coming-of-age",
+      "name": "Coming of Age",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["coming of age", "teenager", "youth", "adolescent", "growing up"],
+      "difficulty": 2,
+      "description": "Films about young characters transitioning to adulthood"
+    },
+    {
+      "id": "love-triangle",
+      "name": "Love Triangles",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["love triangle", "affair", "romance", "torn between"],
+      "difficulty": 3,
+      "description": "Films featuring romantic love triangles"
+    },
+    {
+      "id": "undercover",
+      "name": "Undercover/Infiltration",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["undercover", "infiltrate", "spy", "mole", "double agent"],
+      "difficulty": 3,
+      "description": "Films about characters going undercover"
+    },
+    {
+      "id": "murder-mystery",
+      "name": "Murder Mystery",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["murder", "detective", "mystery", "whodunit", "investigation"],
+      "difficulty": 2,
+      "description": "Films centered around solving a murder"
+    },
+    {
+      "id": "apocalypse",
+      "name": "Post-Apocalyptic",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["apocalypse", "post-apocalyptic", "wasteland", "dystopia", "end of world"],
+      "difficulty": 2,
+      "description": "Films set after a catastrophic event"
+    },
+    {
+      "id": "haunted",
+      "name": "Haunted Houses",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["haunted", "ghost", "spirits", "paranormal", "possession"],
+      "difficulty": 2,
+      "description": "Films featuring haunted locations or possessions"
+    },
+    {
+      "id": "chosen-one",
+      "name": "The Chosen One",
+      "category": "plot",
+      "enabled": true,
+      "keywords": ["chosen", "prophecy", "destiny", "savior"],
+      "difficulty": 3,
+      "description": "Films about a prophesied hero or chosen one"
+    },
+    {
+      "id": "dark-comedy",
+      "name": "Dark Comedy",
+      "category": "tone",
+      "enabled": true,
+      "keywords": ["dark comedy", "black comedy", "satire", "morbid"],
+      "difficulty": 3,
+      "description": "Comedies with dark, morbid, or cynical humor"
+    },
+    {
+      "id": "tearjerker",
+      "name": "Tearjerkers",
+      "category": "tone",
+      "enabled": false,
+      "keywords": ["heartbreaking", "tearjerker"],
+      "difficulty": 3,
+      "description": "Emotionally powerful films designed to make you cry"
+    },
+    {
+      "id": "mind-bender",
+      "name": "Mind-Bending",
+      "category": "tone",
+      "enabled": false,
+      "keywords": ["mind-bending", "psychological thriller", "surreal"],
+      "difficulty": 4,
+      "description": "Films that challenge perception and reality"
+    },
+    {
+      "id": "feel-good",
+      "name": "Feel-Good Films",
+      "category": "tone",
+      "enabled": false,
+      "keywords": ["feel-good", "heartwarming"],
+      "difficulty": 2,
+      "description": "Uplifting films with positive messages"
+    },
+    {
+      "id": "satire",
+      "name": "Social Satire",
+      "category": "tone",
+      "enabled": true,
+      "keywords": ["satire", "satirical", "social commentary", "critique"],
+      "difficulty": 3,
+      "description": "Films that satirize society or social issues"
+    },
+    {
+      "id": "noir",
+      "name": "Film Noir",
+      "category": "tone",
+      "enabled": true,
+      "keywords": ["noir", "detective", "femme fatale", "crime"],
+      "difficulty": 3,
+      "description": "Dark, stylish crime dramas in noir tradition"
+    },
+    {
+      "id": "suspense",
+      "name": "Suspense Thriller",
+      "category": "tone",
+      "enabled": true,
+      "keywords": ["suspense", "thriller", "tension", "edge"],
+      "difficulty": 2,
+      "description": "Tense films that keep you on edge"
+    },
+    {
+      "id": "whimsical",
+      "name": "Whimsical",
+      "category": "tone",
+      "enabled": false,
+      "keywords": ["whimsical", "quirky"],
+      "difficulty": 3,
+      "description": "Lighthearted films with imaginative charm"
+    },
+    {
+      "id": "gritty",
+      "name": "Gritty Realism",
+      "category": "tone",
+      "enabled": true,
+      "keywords": ["gritty", "realistic", "raw", "harsh", "brutal"],
+      "difficulty": 3,
+      "description": "Raw, unflinching realistic portrayals"
+    },
+    {
+      "id": "epic",
+      "name": "Epic Scale",
+      "category": "tone",
+      "enabled": true,
+      "keywords": ["epic", "grand", "sprawling", "saga", "sweeping"],
+      "difficulty": 2,
+      "description": "Large-scale films with epic scope"
+    },
+    {
+      "id": "period-piece",
+      "name": "Period Pieces",
+      "category": "setting",
+      "enabled": false,
+      "keywords": ["period piece", "historical drama"],
+      "difficulty": 2,
+      "description": "Films set in a specific historical period"
+    },
+    {
+      "id": "single-location",
+      "name": "Single Location",
+      "category": "setting",
+      "enabled": true,
+      "keywords": ["trapped", "confined", "single", "location"],
+      "difficulty": 4,
+      "description": "Films that take place in one primary location"
+    },
+    {
+      "id": "road-trip",
+      "name": "Road Trip",
+      "category": "setting",
+      "enabled": true,
+      "keywords": ["road trip", "journey", "travel", "cross-country"],
+      "difficulty": 2,
+      "description": "Films centered around a road journey"
+    },
+    {
+      "id": "courtroom",
+      "name": "Courtroom Drama",
+      "category": "setting",
+      "enabled": true,
+      "keywords": ["courtroom", "trial", "lawyer", "judge", "verdict"],
+      "difficulty": 2,
+      "description": "Legal dramas set in courtrooms"
+    },
+    {
+      "id": "space",
+      "name": "Space Setting",
+      "category": "setting",
+      "enabled": true,
+      "keywords": ["space", "spaceship", "astronaut", "orbit", "galaxy", "alien"],
+      "difficulty": 2,
+      "description": "Films set in outer space"
+    },
+    {
+      "id": "war",
+      "name": "War Films",
+      "category": "setting",
+      "enabled": true,
+      "keywords": ["war", "battle", "soldier", "combat", "military"],
+      "difficulty": 2,
+      "description": "Films set during wartime"
+    },
+    {
+      "id": "high-school",
+      "name": "High School Setting",
+      "category": "setting",
+      "enabled": true,
+      "keywords": ["high school", "school", "student", "teenager", "prom"],
+      "difficulty": 2,
+      "description": "Films set in high school"
+    },
+    {
+      "id": "western",
+      "name": "Western Setting",
+      "category": "setting",
+      "enabled": true,
+      "keywords": ["western", "cowboy", "frontier", "saloon", "sheriff"],
+      "difficulty": 2,
+      "description": "Films set in the American Old West"
+    },
+    {
+      "id": "cityscape",
+      "name": "Urban Cityscape",
+      "category": "setting",
+      "enabled": true,
+      "keywords": ["city", "urban", "metropolis", "skyline"],
+      "difficulty": 2,
+      "description": "Films set in major cities"
+    },
+    {
+      "id": "small-town",
+      "name": "Small Town",
+      "category": "setting",
+      "enabled": true,
+      "keywords": ["small town", "rural", "village", "community"],
+      "difficulty": 3,
+      "description": "Films set in small-town America"
+    },
+    {
+      "id": "true-story",
+      "name": "Based on True Story",
+      "category": "meta",
+      "enabled": false,
+      "keywords": ["true story", "actual events"],
+      "difficulty": 2,
+      "description": "Films based on real events or people"
+    },
+    {
+      "id": "cult-classic",
+      "name": "Cult Classics",
+      "category": "meta",
+      "enabled": true,
+      "keywords": ["cult", "midnight movie"],
+      "difficulty": 4,
+      "description": "Films with devoted cult followings"
+    },
+    {
+      "id": "controversial",
+      "name": "Controversial Films",
+      "category": "meta",
+      "enabled": true,
+      "keywords": ["controversial", "banned", "censored"],
+      "difficulty": 4,
+      "description": "Films that sparked controversy"
+    },
+    {
+      "id": "meta-film",
+      "name": "Films About Filmmaking",
+      "category": "meta",
+      "enabled": false,
+      "keywords": ["filmmaking", "making a movie", "behind the scenes"],
+      "difficulty": 3,
+      "description": "Films about making movies"
+    },
+    {
+      "id": "book-adaptation",
+      "name": "Book Adaptations",
+      "category": "meta",
+      "enabled": true,
+      "keywords": ["based on", "novel", "book", "adapted from"],
+      "difficulty": 2,
+      "description": "Films adapted from books or novels"
+    }
+  ]
+}

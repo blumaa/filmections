@@ -1,6 +1,6 @@
 import { Box } from '@mond-design-system/theme';
 import { useGameStore } from '../../store/gameStore';
-import { useToast } from '../../providers/ToastProvider';
+import { useToast } from '../../providers/useToast';
 import { FoundGroupRow } from './FoundGroupRow';
 import { FilmTile } from './FilmTile';
 import { GameControls } from './GameControls';
@@ -16,14 +16,12 @@ export function GameBoard() {
     mistakes,
     notification,
     gameStatus,
-    testMode,
     isShaking,
-    newGame,
+    puzzleDate,
     selectFilm,
     deselectAll,
     submitGuess,
     shuffleFilms,
-    toggleTestMode,
   } = useGameStore();
 
   const { showInfo } = useToast();
@@ -45,9 +43,7 @@ export function GameBoard() {
           mistakes={mistakes}
           maxMistakes={MAX_MISTAKES}
           gameStatus={gameStatus}
-          testMode={testMode}
-          onNewGame={newGame}
-          onToggleTestMode={toggleTestMode}
+          puzzleDate={puzzleDate || undefined}
         />
 
         {/* Found groups as colored rows */}

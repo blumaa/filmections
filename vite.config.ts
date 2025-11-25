@@ -6,4 +6,15 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@mond-design-system/theme'],
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    css: false, // Don't process CSS in tests
+    server: {
+      deps: {
+        inline: ['@mond-design-system/theme'],
+      },
+    },
+  },
 });

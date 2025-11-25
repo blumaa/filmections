@@ -29,16 +29,17 @@ export interface GameState {
   gameStatus: 'playing' | 'won' | 'lost';
   isLoading: boolean;
   notification: string | null; // For "One away!" and other messages
-  testMode: boolean; // Toggle between test and production puzzle generation
   isShaking: boolean; // Trigger shake animation on wrong guess
+  puzzleDate: string | null; // YYYY-MM-DD format of current puzzle
 }
 
 export type GroupingStrategy =
   | 'director'
   | 'actor'
-  | 'genre'
+  | 'theme'
+  | 'wordplay'
   | 'decade'
-  | 'wordplay';
+  | 'year';
 
 export interface TMDBMovie {
   id: number;
@@ -86,3 +87,6 @@ export interface GameStats {
   maxStreak: number;
   lastPlayedDate: string;
 }
+
+// Re-export stats types
+export type { GameResult, UserStats, IStatsStorage } from './stats';
