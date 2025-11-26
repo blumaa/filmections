@@ -126,7 +126,7 @@ export function HomePage() {
 
   return (
     <div className="app-container">
-      <GameBoard />
+      <GameBoard onViewStats={() => setResultsDismissed(false)} />
       <ResultsModal
         isOpen={showResults}
         onClose={handleCloseResults}

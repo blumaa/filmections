@@ -26,14 +26,12 @@ export function FoundGroupRow({ group }: FoundGroupRowProps) {
           >
             {group.connection}
           </Heading>
-          <Box display="flex" gap="xxs">
-            {group.films.map((film) => {
-              return (
-                <Badge>
-                  <Text variant="body-xs">{film.title}</Text>
-                </Badge>
-              );
-            })}
+          <Box display="flex" gap="xxs" flexWrap="wrap">
+            {group.films.map((film) => (
+              <Badge key={film.id} size="sm">
+                <Text variant="body-xs">{film.title}</Text>
+              </Badge>
+            ))}
           </Box>
         </Box>
       </CardBody>

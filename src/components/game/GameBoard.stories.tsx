@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect } from "react";
 import { GameBoard } from "./GameBoard";
 import { useGameStore } from "../../store/gameStore";
@@ -72,10 +72,8 @@ function StoreInitializer({
   mistakes?: number;
   gameStatus?: "playing" | "won" | "lost";
 }) {
-  const store = useGameStore;
-
   useEffect(() => {
-    store.setState({
+    useGameStore.setState({
       films,
       groups,
       foundGroups,
@@ -183,6 +181,9 @@ export const WithMistakes: Story = {
 };
 
 export const Won: Story = {
+  args: {
+    onViewStats: () => {},
+  },
   decorators: [
     (Story) => (
       <>
@@ -200,6 +201,9 @@ export const Won: Story = {
 };
 
 export const Lost: Story = {
+  args: {
+    onViewStats: () => {},
+  },
   decorators: [
     (Story) => (
       <>

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ResultsModal } from './ResultsModal';
 import { StatsProvider } from '../../providers/StatsProvider';
 import { StorageProvider } from '../../providers/StorageProvider';

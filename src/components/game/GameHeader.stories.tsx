@@ -1,7 +1,5 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { GameHeader } from "./GameHeader";
-import { StatsProvider } from "../../providers/StatsProvider";
-import { StorageProvider } from "../../providers/StorageProvider";
 
 const meta: Meta<typeof GameHeader> = {
   title: "Game/GameHeader",
@@ -10,20 +8,12 @@ const meta: Meta<typeof GameHeader> = {
     layout: "padded",
   },
   tags: ["autodocs"],
-  decorators: [
-    (Story) => (
-      <StorageProvider>
-        <StatsProvider>
-          <Story />
-        </StatsProvider>
-      </StorageProvider>
-    ),
-  ],
   argTypes: {
     mistakes: { control: { type: "number", min: 0, max: 4 } },
     maxMistakes: { control: { type: "number", min: 1, max: 10 } },
     gameStatus: { control: "select", options: ["playing", "won", "lost"] },
     puzzleDate: { control: "text" },
+    onViewStats: { action: "viewStats" },
   },
 };
 
@@ -39,7 +29,6 @@ export const Playing: Story = {
   },
 };
 
-
 export const NoPuzzleDate: Story = {
   args: {
     mistakes: 0,
@@ -48,4 +37,23 @@ export const NoPuzzleDate: Story = {
   },
 };
 
+export const Won: Story = {
+  args: {
+    mistakes: 2,
+    maxMistakes: 4,
+    gameStatus: "won",
+    puzzleDate: "2024-01-15",
+    onViewStats: () => {},
+  },
+};
+
+export const Lost: Story = {
+  args: {
+    mistakes: 4,
+    maxMistakes: 4,
+    gameStatus: "lost",
+    puzzleDate: "2024-01-15",
+    onViewStats: () => {},
+  },
+};
 

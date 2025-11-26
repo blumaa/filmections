@@ -8,7 +8,11 @@ import { GameHeader } from "./GameHeader";
 import { useEffect } from "react";
 import "./GameBoard.css";
 
-export function GameBoard() {
+interface GameBoardProps {
+  onViewStats?: () => void;
+}
+
+export function GameBoard({ onViewStats }: GameBoardProps) {
   const {
     films,
     foundGroups,
@@ -44,6 +48,7 @@ export function GameBoard() {
           maxMistakes={MAX_MISTAKES}
           gameStatus={gameStatus}
           puzzleDate={puzzleDate || undefined}
+          onViewStats={onViewStats}
         />
 
         {/* Found groups as colored rows */}
