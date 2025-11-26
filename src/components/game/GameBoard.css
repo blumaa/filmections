@@ -4,6 +4,34 @@
   margin: 0 auto;
 }
 
+/* Responsive width only (no height) - matches FilmGrid responsive widths */
+.found-groups-container {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mond-spacing-sm);
+}
+
+@media (max-width: 639px) {
+  .found-groups-container {
+    width: calc(3 * 8px + 4 * 22.5vw);
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1024px) {
+  .found-groups-container {
+    width: 500px;
+    max-width: 90vw;
+  }
+}
+
+@media (min-width: 1025px) {
+  .found-groups-container {
+    width: 600px;
+    max-width: 80vw;
+  }
+}
+
 @media (max-width: 640px) {
   .game-board-container {
     max-width: 100%;

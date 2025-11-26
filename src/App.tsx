@@ -1,25 +1,24 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@mond-design-system/theme';
-import { ToastProvider } from './providers/ToastProvider';
-import { ThemeContextProvider } from './providers/ThemeContext';
-import { useThemeContext } from './providers/useThemeContext';
-import { StorageProvider } from './providers/StorageProvider';
-import { StatsProvider } from './providers/StatsProvider';
-import { AuthProvider } from './providers/AuthProvider';
-import { HomePage } from './pages/HomePage';
-import { LoginPage } from './pages/LoginPage';
-import { RequireAdmin } from './components/admin/RequireAdmin';
-import { AdminLayout } from './components/admin/AdminLayout';
-import { AdminDashboard } from './pages/admin/Dashboard';
-import { PuzzleQueue } from './pages/admin/PuzzleQueue';
-import { GroupGeneratorPage } from './pages/admin/GroupGeneratorPage';
-import { GroupPool } from './pages/admin/GroupPool';
-import { PuzzleBuilder } from './pages/admin/PuzzleBuilder';
-import { ThemeManager as AdminThemeManager } from './pages/admin/ThemeManager';
-import { Analytics } from './pages/admin/Analytics';
-import { ThemeToggle } from './components/ThemeToggle';
-import './App.css';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Box, ThemeProvider } from "@mond-design-system/theme";
+import { ToastProvider } from "./providers/ToastProvider";
+import { ThemeContextProvider } from "./providers/ThemeContext";
+import { useThemeContext } from "./providers/useThemeContext";
+import { StorageProvider } from "./providers/StorageProvider";
+import { StatsProvider } from "./providers/StatsProvider";
+import { AuthProvider } from "./providers/AuthProvider";
+import { HomePage } from "./pages/HomePage";
+import { LoginPage } from "./pages/LoginPage";
+import { RequireAdmin } from "./components/admin/RequireAdmin";
+import { AdminLayout } from "./components/admin/AdminLayout";
+import { AdminDashboard } from "./pages/admin/Dashboard";
+import { PuzzleQueue } from "./pages/admin/PuzzleQueue";
+import { GroupGeneratorPage } from "./pages/admin/GroupGeneratorPage";
+import { GroupPool } from "./pages/admin/GroupPool";
+import { PuzzleBuilder } from "./pages/admin/PuzzleBuilder";
+import { ThemeManager as AdminThemeManager } from "./pages/admin/ThemeManager";
+import { Analytics } from "./pages/admin/Analytics";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,16 +36,9 @@ function ThemedApp() {
     <ThemeProvider colorScheme={theme}>
       <ToastProvider>
         <BrowserRouter>
-          <div
-            style={{
-              position: 'absolute',
-              top: '1rem',
-              right: '1rem',
-              zIndex: 1000,
-            }}
-          >
+          <Box display="flex" justifyContent="flex-end" padding="2">
             <ThemeToggle />
-          </div>
+          </Box>
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<HomePage />} />

@@ -1,26 +1,42 @@
-import { Box, Heading, Text } from '@mond-design-system/theme';
-import type { Group } from '../../types';
-import './FoundGroupRow.css';
-
+import {
+  Badge,
+  Box,
+  Card,
+  CardBody,
+  Heading,
+  Text,
+} from "@mond-design-system/theme";
+import type { Group } from "../../types";
+import "./FoundGroupRow.css";
+import { useThemeContext } from "../../providers/useThemeContext";
 interface FoundGroupRowProps {
   group: Group;
 }
 
 export function FoundGroupRow({ group }: FoundGroupRowProps) {
+  const { theme } = useThemeContext();
   return (
-    <div className={`found-group-row ${group.color}`}>
-      <Box padding="4" corners="rounded-md" border='default'>
-        <div className="found-group-heading">
-          <Heading level={3} size="md">
+    <Card className={`found-group-row ${group.color}`}>
+      <CardBody>
+        <Box display="flex" flexDirection="column" gap="xs">
+          <Heading
+            level={3}
+            size="md"
+            semantic={theme === "light" ? "primary" : "inverse"}
+          >
             {group.connection}
           </Heading>
-        </div>
-        <div className="found-group-text">
-          <Text variant="body">
-            {group.films.map((f) => f.title).join(', ')}
-          </Text>
-        </div>
-      </Box>
-    </div>
+          <Box display="flex" gap="xxs">
+            {group.films.map((film) => {
+              return (
+                <Badge>
+                  <Text variant="body-xs">{film.title}</Text>
+                </Badge>
+              );
+            })}
+          </Box>
+        </Box>
+      </CardBody>
+    </Card>
   );
 }

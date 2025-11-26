@@ -1,4 +1,4 @@
-import { Box, Button } from '@mond-design-system/theme';
+import { Box, Button } from "@mond-design-system/theme";
 
 interface GameControlsProps {
   onSubmit: () => void;
@@ -17,22 +17,29 @@ export function GameControls({
 }: GameControlsProps) {
   return (
     <Box display="flex" gap="sm" justifyContent="center">
-      <Button variant="outline" onClick={onShuffle} size="md">
+      <Button
+        variant="outline"
+        onClick={onShuffle}
+        size="sm"
+        corners="rounded-xl"
+      >
         Shuffle
       </Button>
       <Button
         variant="outline"
         onClick={onDeselect}
-        size="md"
+        size="sm"
         disabled={!hasSelection}
+        corners="rounded-xl"
       >
         Deselect All
       </Button>
       <Button
         variant="primary"
         onClick={onSubmit}
-        size="md"
+        size="sm"
         disabled={!canSubmit}
+        corners="rounded-xl"
       >
         Submit
       </Button>

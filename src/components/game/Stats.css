@@ -1,0 +1,13 @@
+.stats-section {
+  background-color: var(--mond-colors-gray-100);
+}
+
+.stat-number {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: bold;
+}
+
+[data-theme="dark"] .stats-section {
+  background-color: var(--mond-colors-gray-800);
+}

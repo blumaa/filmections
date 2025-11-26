@@ -1,12 +1,12 @@
-import { Box } from '@mond-design-system/theme';
-import { useGameStore } from '../../store/gameStore';
-import { useToast } from '../../providers/useToast';
-import { FoundGroupRow } from './FoundGroupRow';
-import { FilmTile } from './FilmTile';
-import { GameControls } from './GameControls';
-import { GameHeader } from './GameHeader';
-import { useEffect } from 'react';
-import './GameBoard.css';
+import { Box } from "@mond-design-system/theme";
+import { useGameStore } from "../../store/gameStore";
+import { useToast } from "../../providers/useToast";
+import { FoundGroupRow } from "./FoundGroupRow";
+import { FilmGrid } from "./FilmGrid";
+import { GameControls } from "./GameControls";
+import { GameHeader } from "./GameHeader";
+import { useEffect } from "react";
+import "./GameBoard.css";
 
 export function GameBoard() {
   const {
@@ -38,7 +38,7 @@ export function GameBoard() {
 
   return (
     <div className="game-board-container">
-      <Box display="flex" flexDirection="column" gap="lg" >
+      <Box display="flex" flexDirection="column" gap="lg">
         <GameHeader
           mistakes={mistakes}
           maxMistakes={MAX_MISTAKES}
@@ -48,29 +48,24 @@ export function GameBoard() {
 
         {/* Found groups as colored rows */}
         {foundGroups.length > 0 && (
-          <Box display="flex" flexDirection="column" gap="sm">
+          <div className="found-groups-container">
             {foundGroups.map((group) => (
               <FoundGroupRow key={group.id} group={group} />
             ))}
-          </Box>
+          </div>
         )}
 
         {/* Remaining film tiles in dynamic grid */}
-        {films.length > 0 && gameStatus === 'playing' && (
-          <Box display="grid" gap="xs" gridTemplateColumns="repeat(4, 1fr)">
-            {films.map((film) => (
-              <FilmTile
-                key={film.id}
-                film={film}
-                isSelected={selectedFilmIds.includes(film.id)}
-                isShaking={isShaking}
-                onClick={() => selectFilm(film.id)}
-              />
-            ))}
-          </Box>
+        {films.length > 0 && gameStatus === "playing" && (
+          <FilmGrid
+            films={films}
+            selectedFilmIds={selectedFilmIds}
+            isShaking={isShaking}
+            onSelectFilm={selectFilm}
+          />
         )}
 
-        {gameStatus === 'playing' && (
+        {gameStatus === "playing" && (
           <GameControls
             onSubmit={submitGuess}
             onShuffle={shuffleFilms}

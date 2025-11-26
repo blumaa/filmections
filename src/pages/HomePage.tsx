@@ -131,7 +131,6 @@ export function HomePage() {
         isOpen={showResults}
         onClose={handleCloseResults}
         gameStatus={gameStatus === 'playing' ? 'won' : gameStatus}
-        groups={groups}
         mistakes={mistakes}
       />
     </div>

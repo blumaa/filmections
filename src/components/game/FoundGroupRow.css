@@ -4,29 +4,17 @@
 
 .found-group-row.yellow {
   background-color: rgb(249, 223, 109);
-  color: rgb(0, 0, 0);
 }
 
 .found-group-row.green {
   background-color: rgb(160, 195, 90);
-  color: rgb(0, 0, 0);
 }
 
 .found-group-row.blue {
   background-color: rgb(176, 196, 239);
-  color: rgb(0, 0, 0);
 }
 
 .found-group-row.purple {
   background-color: rgb(186, 129, 197);
-  color: rgb(255, 255, 255);
 }
 
-.found-group-heading {
-  margin-bottom: 0.5rem;
-  font-weight: 700;
-}
-
-.found-group-text {
-  opacity: 0.9;
-}

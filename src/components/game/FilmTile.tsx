@@ -1,6 +1,5 @@
-import { Box, Text } from "@mond-design-system/theme";
+import { Card, CardBody, Box, Text } from "@mond-design-system/theme";
 import type { Film } from "../../types";
-import "./FilmTile.css";
 
 interface FilmTileProps {
   film: Film;
@@ -16,17 +15,27 @@ export function FilmTile({
   onClick,
 }: FilmTileProps) {
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      padding="1"
-      corners="rounded-lg"
-      border="default"
+    <Card
+      aspectRatio="square"
+      isSelected={isSelected}
+      shake={isShaking && isSelected}
       onClick={onClick}
-      className={`film-tile ${isSelected ? "selected" : ""} ${isShaking && isSelected ? "shake" : ""}`}
+      hoverable
+      variant="elevated"
     >
-      <Text variant="caption">{film.title}</Text>
-    </Box>
+      <CardBody>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          height="full"
+        >
+          <Text variant="body-sm" weight="medium" align="center">
+            {film.title}
+          </Text>
+        </Box>
+      </CardBody>
+    </Card>
   );
 }

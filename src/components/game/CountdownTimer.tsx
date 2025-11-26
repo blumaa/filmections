@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react";
-import { Text } from "@mond-design-system/theme";
-
-interface CountdownTimerProps {
-  className?: string;
-}
+import { Box, Text } from "@mond-design-system/theme";
 
 function getTimeUntilMidnightUTC(): { hours: number; minutes: number; seconds: number } {
   const now = new Date();
-  const tomorrow = new Date(now);
-  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-  tomorrow.setUTCHours(0, 0, 0, 0);
+  const midnight = new Date(now);
+  midnight.setUTCDate(midnight.getUTCDate() + 1);
+  midnight.setUTCHours(0, 0, 0, 0);
 
-  const diff = tomorrow.getTime() - now.getTime();
+  const diff = midnight.getTime() - now.getTime();
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -19,34 +15,33 @@ function getTimeUntilMidnightUTC(): { hours: number; minutes: number; seconds: n
   return { hours, minutes, seconds };
 }
 
-export function CountdownTimer({ className }: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(getTimeUntilMidnightUTC());
+export function CountdownTimer() {
+  const [countdown, setCountdown] = useState(getTimeUntilMidnightUTC());
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft(getTimeUntilMidnightUTC());
+      setCountdown(getTimeUntilMidnightUTC());
     }, 1000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const formatTime = () => {
-    const parts = [];
-    if (timeLeft.hours > 0) {
-      parts.push(`${timeLeft.hours}h`);
-    }
-    if (timeLeft.minutes > 0 || timeLeft.hours > 0) {
-      parts.push(`${timeLeft.minutes}m`);
-    }
-    parts.push(`${timeLeft.seconds}s`);
-    return parts.join(" ");
+  const formatCountdown = () => {
+    const { hours, minutes, seconds } = countdown;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
   return (
-    <div className={className}>
-      <Text variant="body">
-        Next puzzle in {formatTime()}
-      </Text>
-    </div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      gap="xs"
+      corners="rounded-md"
+      className="countdown-section"
+    >
+      <Text variant="caption">Next puzzle in</Text>
+      <Text variant="display" weight="semibold">{formatCountdown()}</Text>
+    </Box>
   );
 }
