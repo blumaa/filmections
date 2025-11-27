@@ -14,6 +14,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^2.31.3",
     "@anthropic-ai/sdk": "^0.71.0",
     "@mond-design-system/theme": "^2.9.5",
     "@supabase/supabase-js": "^2.84.0",

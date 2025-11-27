@@ -1,5 +1,6 @@
 import { Button } from '@mond-design-system/theme';
 import { useThemeContext } from '../providers/useThemeContext';
+import { trackEvent, EVENTS } from '../services/analytics';
 
 /**
  * ThemeToggle Component
@@ -16,12 +17,18 @@ import { useThemeContext } from '../providers/useThemeContext';
 export function ThemeToggle() {
   const { theme, toggleTheme } = useThemeContext();
 
+  const handleToggle = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    toggleTheme();
+    trackEvent(EVENTS.THEME_TOGGLED, { newTheme });
+  };
+
   return (
     <Button
       variant="ghost"
       size="sm"
       iconOnly
-      onClick={toggleTheme}
+      onClick={handleToggle}
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
       {theme === 'light' ? '🌙' : '☀️'}

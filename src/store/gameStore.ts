@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { GameState, Group, Film } from '../types';
 import { shuffleArray } from '../lib/puzzle-engine/utils/shuffle';
+import { trackEvent, EVENTS } from '../services/analytics';
 
 interface GameActions {
   selectFilm: (filmId: number) => void;
@@ -105,6 +106,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
       }
     }
 
+    const { puzzleDate } = get();
+    const wasOneAway = !matchedGroup && groups.some((group) => {
+      const groupFilmIds = group.films.map((f) => f.id);
+      const matchCount = sortedGuess.filter((id) => groupFilmIds.includes(id)).length;
+      return matchCount === 3;
+    });
+
     if (matchedGroup) {
       // Correct guess!
       const newFoundGroups = [...foundGroups, matchedGroup];
@@ -121,6 +129,29 @@ export const useGameStore = create<GameStore>((set, get) => ({
         previousGuesses: [...previousGuesses, sortedGuess],
         gameStatus: isGameWon ? 'won' : 'playing',
       });
+
+      // Track events
+      trackEvent(EVENTS.GUESS_SUBMITTED, {
+        puzzleDate,
+        isCorrect: true,
+        mistakeCount: mistakes,
+        wasOneAway: false,
+      });
+
+      trackEvent(EVENTS.GROUP_FOUND, {
+        puzzleDate,
+        groupIndex: newFoundGroups.length,
+        difficulty: matchedGroup.difficulty,
+        mistakesSoFar: mistakes,
+      });
+
+      if (isGameWon) {
+        trackEvent(EVENTS.GAME_WON, {
+          puzzleDate,
+          mistakes,
+          groupsFound: 4,
+        });
+      }
     } else {
       // Wrong guess
       const newMistakes = mistakes + 1;
@@ -136,14 +167,31 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isShaking: true,
       });
 
+      // Track events
+      trackEvent(EVENTS.GUESS_SUBMITTED, {
+        puzzleDate,
+        isCorrect: false,
+        mistakeCount: newMistakes,
+        wasOneAway,
+      });
+
+      if (isGameLost) {
+        trackEvent(EVENTS.GAME_LOST, {
+          puzzleDate,
+          mistakes: newMistakes,
+          groupsFound: foundGroups.length,
+        });
+      }
+
       // Reset shake animation after 500ms
       setTimeout(() => set({ isShaking: false }), 500);
     }
   },
 
   shuffleFilms: () => {
-    const { films } = get();
+    const { films, puzzleDate } = get();
     set({ films: shuffleArray(films) });
+    trackEvent(EVENTS.FILMS_SHUFFLED, { puzzleDate });
   },
 
   /**

@@ -7,6 +7,7 @@ import { useStorage } from "../providers/useStorage";
 import { useStats } from "../providers/useStats";
 import { useDailyPuzzle } from "../lib/supabase/storage";
 import { getTodayDate } from "../utils/index";
+import { trackEvent, EVENTS } from "../services/analytics";
 import type { GameResult } from "../types";
 
 export function HomePage() {
@@ -46,6 +47,10 @@ export function HomePage() {
   useEffect(() => {
     if (puzzle && statsLoaded && !alreadyPlayedToday) {
       initializeGame(puzzle.films, puzzle.groups, today);
+      trackEvent(EVENTS.GAME_STARTED, {
+        puzzleId: puzzle.id,
+        puzzleDate: today,
+      });
     } else if (puzzle && statsLoaded && alreadyPlayedToday) {
       // Restore completed game state for display
       restoreCompletedGame(
@@ -53,6 +58,11 @@ export function HomePage() {
         alreadyPlayedToday.won,
         alreadyPlayedToday.mistakes,
       );
+      trackEvent(EVENTS.GAME_RESUMED, {
+        puzzleId: puzzle.id,
+        puzzleDate: today,
+        mistakesSoFar: alreadyPlayedToday.mistakes,
+      });
     }
   }, [
     puzzle,

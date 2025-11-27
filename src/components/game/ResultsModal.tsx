@@ -4,6 +4,7 @@ import { Box, Heading, Text, Button, Divider } from "@mond-design-system/theme";
 import { useStats } from "../../providers/useStats";
 import { Stats } from "./Stats";
 import { CountdownTimer } from "./CountdownTimer";
+import { trackEvent, EVENTS } from "../../services/analytics";
 import type { UserStats } from "../../types";
 
 interface ResultsModalProps {
@@ -27,7 +28,14 @@ export function ResultsModal({
     if (isOpen) {
       stats
         .getStats()
-        .then(setUserStats)
+        .then((loadedStats) => {
+          setUserStats(loadedStats);
+          trackEvent(EVENTS.STATS_VIEWED, {
+            gamesPlayed: loadedStats.gamesPlayed,
+            currentStreak: loadedStats.currentStreak,
+            maxStreak: loadedStats.maxStreak,
+          });
+        })
         .catch((error) => {
           console.error("Failed to load stats:", error);
         });
@@ -71,8 +79,8 @@ export function ResultsModal({
 
         <CountdownTimer />
 
-        <Divider />
-        <Box display="flex" justifyContent="center" paddingBottom="2">
+        {/* <Divider /> */}
+        <Box display="flex" justifyContent="center" padding="2" border="subtle">
           <Button variant="primary" onClick={onClose} size="lg">
             Back to Game
           </Button>
