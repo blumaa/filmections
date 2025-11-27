@@ -1,4 +1,4 @@
-# Filmections
+# Filmecules
 
 A film-themed connections game inspired by NYTimes Connections. Group 16 films into 4 categories of 4!
 

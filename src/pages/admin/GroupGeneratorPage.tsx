@@ -171,7 +171,7 @@ export function GroupGeneratorPage() {
         <Heading level={1} size="2xl">
           AI Group Generator
         </Heading>
-        <Text variant="body">
+        <Text size="md">
           Generate creative connection groups using Claude AI
         </Text>
       </Box>
@@ -186,7 +186,7 @@ export function GroupGeneratorPage() {
 
             <Box display="flex" flexDirection="column" gap="xs">
               <label htmlFor="poolSize">
-                <Text variant="body" weight="medium">
+                <Text size="md" weight="medium">
                   Pool Size: {config.moviePoolSize} movies
                 </Text>
               </label>
@@ -200,14 +200,14 @@ export function GroupGeneratorPage() {
                 onChange={(e) => updateConfig({ moviePoolSize: Number(e.target.value) })}
                 className="range-input"
               />
-              <Text variant="caption">More movies = more potential connections</Text>
+              <Text size="xs">More movies = more potential connections</Text>
             </Box>
 
             <Box className="ai-info-box" padding="3">
-              <Text variant="caption">
+              <Text size="xs">
                 Films are fetched with equal distribution across 5 eras:
               </Text>
-              <Text variant="caption">
+              <Text size="xs">
                 Silent/Classic (1920-1959) | New Hollywood (1960-1979) |
                 Blockbuster (1980-1999) | Modern (2000-2014) | Contemporary (2015+)
               </Text>
@@ -215,9 +215,9 @@ export function GroupGeneratorPage() {
 
             {eraDistribution && (
               <Box className="era-distribution" padding="2">
-                <Text variant="caption" weight="medium">Pool breakdown:</Text>
+                <Text size="xs" weight="medium">Pool breakdown:</Text>
                 {Object.entries(eraDistribution).map(([era, count]) => (
-                  <Text key={era} variant="caption">
+                  <Text key={era} size="xs">
                     {era}: {count} films
                   </Text>
                 ))}
@@ -235,7 +235,7 @@ export function GroupGeneratorPage() {
 
             <Box display="flex" flexDirection="column" gap="xs">
               <label htmlFor="groupCount">
-                <Text variant="body" weight="medium">
+                <Text size="md" weight="medium">
                   Groups to Generate: {config.groupCount}
                 </Text>
               </label>
@@ -249,7 +249,7 @@ export function GroupGeneratorPage() {
                 onChange={(e) => updateConfig({ groupCount: Number(e.target.value) })}
                 className="range-input"
               />
-              <Text variant="caption">
+              <Text size="xs">
                 AI will find this many unique 4-film connections
               </Text>
             </Box>
@@ -262,17 +262,17 @@ export function GroupGeneratorPage() {
                 onChange={(e) => updateConfig({ useHybrid: e.target.checked })}
               />
               <span className="analyzer-label">
-                <Text variant="body" weight="medium">
+                <Text size="md" weight="medium">
                   Use Hybrid Mode (Recommended)
                 </Text>
-                <Text variant="caption">
+                <Text size="xs">
                   Deterministic discovery finds guaranteed connections first
                 </Text>
               </span>
             </label>
 
             <Box className="ai-info-box" padding="3">
-              <Text variant="caption">
+              <Text size="xs">
                 {config.useHybrid
                   ? 'Hybrid mode: Finds director, actor, and title pattern connections that are 100% verified.'
                   : 'AI mode: AI suggests connections with verification. Some may fail verification.'}
@@ -281,7 +281,7 @@ export function GroupGeneratorPage() {
 
             {tokensUsed && (
               <Box className="token-usage" padding="2">
-                <Text variant="caption">
+                <Text size="xs">
                   Tokens used: {tokensUsed.input} input + {tokensUsed.output} output
                   (est. ${((tokensUsed.input * 0.003 + tokensUsed.output * 0.015) / 1000).toFixed(3)})
                 </Text>
@@ -290,7 +290,7 @@ export function GroupGeneratorPage() {
 
             {filteredCount > 0 && (
               <Box className="filtered-notice" padding="2">
-                <Text variant="caption">
+                <Text size="xs">
                   {filteredCount} group{filteredCount !== 1 ? 's' : ''} filtered for violating rules
                   (franchises, trivial patterns, etc.)
                 </Text>
@@ -299,7 +299,7 @@ export function GroupGeneratorPage() {
 
             {deterministicCount > 0 && (
               <Box className="ai-info-box" padding="2">
-                <Text variant="caption">
+                <Text size="xs">
                   {deterministicCount} guaranteed connections found (director, actor, title patterns)
                 </Text>
               </Box>
@@ -333,13 +333,13 @@ export function GroupGeneratorPage() {
 
             {progress && (
               <Box className="progress-message" padding="2">
-                <Text variant="body">{progress}</Text>
+                <Text size="md">{progress}</Text>
               </Box>
             )}
 
             {error && (
               <Box className="error-message" padding="2">
-                <Text variant="body">{error}</Text>
+                <Text size="md">{error}</Text>
               </Box>
             )}
 
@@ -359,7 +359,7 @@ export function GroupGeneratorPage() {
                                 backgroundColor: DIFFICULTY_COLORS[group.color],
                               }}
                             />
-                            <Text variant="body" weight="medium">
+                            <Text size="md" weight="medium">
                               {group.connection}
                             </Text>
                             <span className="verification-badge verified" title="Verified against actual data">
@@ -377,7 +377,7 @@ export function GroupGeneratorPage() {
                                 {group.category}
                               </Badge>
                             )}
-                            <Text variant="caption">
+                            <Text size="xs">
                               {group.difficulty}
                             </Text>
                             <button
@@ -389,12 +389,12 @@ export function GroupGeneratorPage() {
                             </button>
                           </Box>
                         </Box>
-                        <Text variant="caption">
+                        <Text size="xs">
                           {group.films.map((f) => `${f.title} (${f.year})`).join(', ')}
                         </Text>
                         {group.explanation && (
                           <span className="explanation-text">
-                            <Text variant="caption">{group.explanation}</Text>
+                            <Text size="xs">{group.explanation}</Text>
                           </span>
                         )}
                       </Box>
@@ -423,13 +423,13 @@ export function GroupGeneratorPage() {
             ) : isGenerating ? (
               <Box className="empty-state" display="flex" flexDirection="column" alignItems="center" gap="md">
                 <Spinner size="lg" />
-                <Text variant="body">Generating groups...</Text>
-                {progress && <Text variant="caption">{progress}</Text>}
+                <Text size="md">Generating groups...</Text>
+                {progress && <Text size="xs">{progress}</Text>}
               </Box>
             ) : (
               <Box className="empty-state">
-                <Text variant="body">No groups generated yet</Text>
-                <Text variant="caption">
+                <Text size="md">No groups generated yet</Text>
+                <Text size="xs">
                   Configure settings and click Generate with AI to find creative connections
                 </Text>
               </Box>

@@ -1,10 +1,12 @@
-import { Box } from "@mond-design-system/theme";
+import { Box, Button } from "@mond-design-system/theme";
 import { useGameStore } from "../../store/gameStore";
 import { useToast } from "../../providers/useToast";
 import { FoundGroupRow } from "./FoundGroupRow";
 import { FilmGrid } from "./FilmGrid";
 import { GameControls } from "./GameControls";
 import { GameHeader } from "./GameHeader";
+import { MistakesIndicator } from "./MistakesIndicator";
+import StatsIcon from "./StatsIcon";
 import { useEffect } from "react";
 import "./GameBoard.css";
 
@@ -41,14 +43,11 @@ export function GameBoard({ onViewStats }: GameBoardProps) {
   }, [notification, showInfo]);
 
   return (
-    <div className="game-board-container">
-      <Box display="flex" flexDirection="column" gap="lg">
+    <Box>
+      <Box display="flex" flexDirection="column" gap="sm">
         <GameHeader
-          mistakes={mistakes}
-          maxMistakes={MAX_MISTAKES}
           gameStatus={gameStatus}
           puzzleDate={puzzleDate || undefined}
-          onViewStats={onViewStats}
         />
 
         {/* Found groups as colored rows */}
@@ -70,6 +69,18 @@ export function GameBoard({ onViewStats }: GameBoardProps) {
           />
         )}
 
+        {gameStatus === "playing" ? (
+          <MistakesIndicator mistakes={mistakes} maxMistakes={MAX_MISTAKES} />
+        ) : (
+          onViewStats && (
+            <Box display="flex" justifyContent="center">
+              <Button variant="outline" size="sm" onClick={onViewStats} iconOnly>
+                <StatsIcon />
+              </Button>
+            </Box>
+          )
+        )}
+
         {gameStatus === "playing" && (
           <GameControls
             onSubmit={submitGuess}
@@ -80,6 +91,6 @@ export function GameBoard({ onViewStats }: GameBoardProps) {
           />
         )}
       </Box>
-    </div>
+    </Box>
   );
 }

@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Box, Text } from "@mond-design-system/theme";
 
-function getTimeUntilMidnightUTC(): { hours: number; minutes: number; seconds: number } {
+function getTimeUntilMidnightUTC(): {
+  hours: number;
+  minutes: number;
+  seconds: number;
+} {
   const now = new Date();
   const midnight = new Date(now);
   midnight.setUTCDate(midnight.getUTCDate() + 1);
@@ -28,20 +32,15 @@ export function CountdownTimer() {
 
   const formatCountdown = () => {
     const { hours, minutes, seconds } = countdown;
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      gap="xs"
-      corners="rounded-md"
-      className="countdown-section"
-    >
-      <Text variant="caption">Next puzzle in</Text>
-      <Text variant="display" weight="semibold">{formatCountdown()}</Text>
+    <Box display="flex" alignItems="center" justifyContent="center" gap="sm">
+      <Text size="2xs">Next puzzle in</Text>
+      <Text size="xl" weight="semibold">
+        {formatCountdown()}
+      </Text>
     </Box>
   );
 }

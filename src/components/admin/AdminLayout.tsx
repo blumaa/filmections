@@ -40,7 +40,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <Box display="flex" flexDirection="column" gap="lg" padding="4">
           <Box display="flex" flexDirection="column" gap="sm">
             <Heading level={2} size="lg">
-              Filmections Admin
+              Filmecules Admin
             </Heading>
             {user?.email && (
               <div className="admin-user-email">{user.email}</div>

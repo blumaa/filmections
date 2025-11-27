@@ -1,0 +1,5 @@
+.group-filters {
+  padding: var(--space-3);
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+}

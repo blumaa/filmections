@@ -60,7 +60,7 @@ export function ResultsModal({
         </Box>
 
         <Box display="flex" flexDirection="column" alignItems="center">
-          <Text variant="body-sm">
+          <Text>
             {gameStatus === "won"
               ? `You found all connections with ${mistakes} mistake${mistakes !== 1 ? "s" : ""}.`
               : "Better luck next time!"}

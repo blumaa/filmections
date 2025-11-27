@@ -23,7 +23,7 @@ export function RequireAdmin({ children }: RequireAdminProps) {
           gap="lg"
         >
           <Spinner size="lg" />
-          <Text variant="body">Checking authorization...</Text>
+          <Text>Checking authorization...</Text>
         </Box>
       </div>
     );
@@ -45,10 +45,10 @@ export function RequireAdmin({ children }: RequireAdminProps) {
           justifyContent="center"
           gap="lg"
         >
-          <Text variant="body">
+          <Text>
             You do not have permission to access this page.
           </Text>
-          <Text variant="caption">
+          <Text semantic="secondary">
             Please contact an administrator if you believe this is an error.
           </Text>
         </Box>

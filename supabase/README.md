@@ -1,6 +1,6 @@
 # Supabase Setup
 
-This directory contains SQL migrations for the Filmections database schema.
+This directory contains SQL migrations for the Filmecules database schema.
 
 ## Quick Start
 

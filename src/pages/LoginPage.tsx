@@ -52,7 +52,7 @@ export function LoginPage() {
           <Heading level={1} size="2xl">
             Admin Login
           </Heading>
-          <Text variant="body">
+          <Text size="md">
             Sign in to access the admin panel
           </Text>
         </Box>
@@ -61,7 +61,7 @@ export function LoginPage() {
           <Box display="flex" flexDirection="column" gap="md">
             <Box display="flex" flexDirection="column" gap="xs">
               <label htmlFor="email">
-                <Text variant="body" weight="medium">
+                <Text size="md" weight="medium">
                   Email
                 </Text>
               </label>
@@ -70,7 +70,7 @@ export function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@filmections.com"
+                placeholder="admin@filmecules.com"
                 required
                 disabled={isLoading}
               />
@@ -78,7 +78,7 @@ export function LoginPage() {
 
             <Box display="flex" flexDirection="column" gap="xs">
               <label htmlFor="password">
-                <Text variant="body" weight="medium">
+                <Text size="md" weight="medium">
                   Password
                 </Text>
               </label>
@@ -95,7 +95,7 @@ export function LoginPage() {
 
             {error && (
               <Box padding="2" className="login-error">
-                <Text variant="body">{error}</Text>
+                <Text size="md">{error}</Text>
               </Box>
             )}
 

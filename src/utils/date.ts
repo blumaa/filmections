@@ -83,10 +83,10 @@ export function getPuzzleNumber(dateString: string): number {
  * Format date for puzzle header display.
  *
  * @param dateString - Date string (YYYY-MM-DD)
- * @returns Formatted string (e.g., "Filmections #329 - November 24, 2025")
+ * @returns Formatted string (e.g., "Filmecules #329 - November 24, 2025")
  */
 export function formatPuzzleHeader(dateString: string): string {
   const puzzleNumber = getPuzzleNumber(dateString);
   const formattedDate = formatDate(dateString);
-  return `Filmections #${puzzleNumber} - ${formattedDate}`;
+  return `Filmecules #${puzzleNumber} - ${formattedDate}`;
 }

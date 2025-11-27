@@ -31,7 +31,7 @@ export function FilmTile({
           justifyContent="center"
           height="full"
         >
-          <Text variant="body-sm" weight="medium" align="center">
+          <Text responsive align="center">
             {film.title}
           </Text>
         </Box>

@@ -122,14 +122,14 @@ export function PuzzleBuilder() {
         <Heading level={1} size="2xl">
           Puzzle Builder
         </Heading>
-        <Text variant="body">
+        <Text size="md">
           Select one group from each difficulty level to create a puzzle
         </Text>
       </Box>
 
       {/* Puzzle Title */}
       <Box display="flex" flexDirection="column" gap="xs" className="title-section">
-        <Text variant="body" weight="medium">
+        <Text size="md" weight="medium">
           Puzzle Title (optional)
         </Text>
         <input
@@ -160,11 +160,11 @@ export function PuzzleBuilder() {
                     className="color-dot"
                     style={{ backgroundColor: DIFFICULTY_COLORS[color] }}
                   />
-                  <Text variant="body" weight="medium">
+                  <Text size="md" weight="medium">
                     {DIFFICULTY_LABELS[color]}
                   </Text>
                 </Box>
-                <Text variant="caption">
+                <Text size="xs">
                   {groupsByColor[color].length} available
                 </Text>
               </Box>
@@ -174,12 +174,12 @@ export function PuzzleBuilder() {
             <Box className="slot-content" padding="3">
               {selectedGroups[color] ? (
                 <Box display="flex" flexDirection="column" gap="sm">
-                  <Text variant="body" weight="medium">
+                  <Text size="md" weight="medium">
                     {selectedGroups[color]!.connection}
                   </Text>
                   <Box display="flex" gap="xs" className="films-preview">
                     {selectedGroups[color]!.films.map((film) => (
-                      <Text key={film.id} variant="caption">
+                      <Text key={film.id} size="xs">
                         {film.title}
                       </Text>
                     ))}
@@ -195,11 +195,11 @@ export function PuzzleBuilder() {
               ) : activeColor === color ? (
                 <Box display="flex" flexDirection="column" gap="sm" className="group-list">
                   {groupsByColor[color].length === 0 ? (
-                    <Text variant="caption">No approved groups available</Text>
+                    <Text size="xs">No approved groups available</Text>
                   ) : (
                     <>
                       <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Text variant="caption">Select a group:</Text>
+                        <Text size="xs">Select a group:</Text>
                         <Button
                           variant="outline"
                           size="sm"
@@ -215,14 +215,14 @@ export function PuzzleBuilder() {
                             className="group-option"
                             onClick={() => handleSelectGroup(color, group)}
                           >
-                            <Text variant="body" weight="medium">
+                            <Text size="md" weight="medium">
                               {group.connection}
                             </Text>
-                            <Text variant="caption">
+                            <Text size="xs">
                               {group.films.map((f) => f.title).join(', ')}
                             </Text>
                             <span className="usage-badge">
-                              <Text variant="caption">
+                              <Text size="xs">
                                 Used {group.usageCount}x
                               </Text>
                             </span>
@@ -254,7 +254,7 @@ export function PuzzleBuilder() {
               <Heading level={2} size="lg">
                 Puzzle Preview
               </Heading>
-              <Text variant="body">
+              <Text size="md">
                 Quality Score: {qualityScore}
               </Text>
             </Box>
@@ -273,10 +273,10 @@ export function PuzzleBuilder() {
                     style={{ backgroundColor: DIFFICULTY_COLORS[color] }}
                   />
                   <Box display="flex" flexDirection="column">
-                    <Text variant="body" weight="medium">
+                    <Text size="md" weight="medium">
                       {selectedGroups[color]!.connection}
                     </Text>
-                    <Text variant="caption">
+                    <Text size="xs">
                       {selectedGroups[color]!.films.map((f) => f.title).join(' | ')}
                     </Text>
                   </Box>

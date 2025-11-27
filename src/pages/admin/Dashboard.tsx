@@ -6,8 +6,8 @@ export function AdminDashboard() {
       <Heading level={1} size="2xl">
         Admin Dashboard
       </Heading>
-      <Text variant="body">
-        Welcome to the Filmections admin panel.
+      <Text responsive>
+        Welcome to the Filmecules admin panel.
       </Text>
     </Box>
   );

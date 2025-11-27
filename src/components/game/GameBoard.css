@@ -1,9 +1,3 @@
-.game-board-container {
-  max-width: 800px;
-  width: 100%;
-  margin: 0 auto;
-}
-
 /* Responsive width only (no height) - matches FilmGrid responsive widths */
 .found-groups-container {
   margin: 0 auto;
@@ -41,24 +35,5 @@
   /* Reduce gaps on mobile */
   .game-board-container > div {
     gap: var(--mond-spacing-md) !important;
-  }
-}
-
-.game-notification {
-  background-color: var(--mond-surface-secondary);
-  border: 2px solid var(--mond-border-primary);
-  border-radius: var(--mond-radius-md);
-  text-align: center;
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
   }
 }

@@ -8,7 +8,7 @@
 import type { IStatsStorage, UserStats, GameResult } from '../types/stats';
 import { getTodayDate } from '../utils/date';
 
-const STORAGE_KEY = 'filmections-stats';
+const STORAGE_KEY = 'filmecules-stats';
 
 /**
  * Get the date for yesterday in YYYY-MM-DD format

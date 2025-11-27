@@ -77,7 +77,7 @@ describe('useTheme', () => {
       result.current.setTheme('dark');
     });
 
-    expect(localStorage.getItem('filmections-theme')).toBe('dark');
+    expect(localStorage.getItem('filmecules-theme')).toBe('dark');
   });
 
   it('should set data-theme attribute on document root', () => {
@@ -93,7 +93,7 @@ describe('useTheme', () => {
   });
 
   it('should load theme from localStorage on mount', () => {
-    localStorage.setItem('filmections-theme', 'dark');
+    localStorage.setItem('filmecules-theme', 'dark');
 
     const { result } = renderHook(() => useTheme());
 
@@ -121,7 +121,7 @@ describe('useTheme', () => {
   });
 
   it('should prefer stored theme over system preference', () => {
-    localStorage.setItem('filmections-theme', 'light');
+    localStorage.setItem('filmecules-theme', 'light');
 
     // Mock matchMedia to return dark mode preference
     window.matchMedia = vi.fn().mockImplementation(query => ({

@@ -6,7 +6,7 @@ export function ThemeManager() {
       <Heading level={1} size="2xl">
         Theme Manager
       </Heading>
-      <Text variant="body">
+      <Text size="md">
         Theme manager will be implemented in MDS-130.
       </Text>
     </Box>

@@ -15,16 +15,16 @@ export function Stats({ stats }: StatsProps) {
         </Heading>
         <Box display="flex" justifyContent="space-between" gap="md">
           <Box display="flex" flexDirection="column" alignItems="center">
-            <Text variant="display" align="center">{stats.gamesPlayed}</Text>
-            <Text variant="caption" align="center">Played</Text>
+            <Text size="2xl" align="center">{stats.gamesPlayed}</Text>
+            <Text semantic="secondary" align="center">Played</Text>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center">
-            <Text variant="display" align="center">{stats.currentStreak}</Text>
-            <Text variant="caption" align="center">Current Streak</Text>
+            <Text size="2xl" align="center">{stats.currentStreak}</Text>
+            <Text semantic="secondary" align="center">Current Streak</Text>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center">
-            <Text variant="display" align="center">{stats.maxStreak}</Text>
-            <Text variant="caption" align="center">Max Streak</Text>
+            <Text size="2xl" align="center">{stats.maxStreak}</Text>
+            <Text semantic="secondary" align="center">Max Streak</Text>
           </Box>
         </Box>
       </CardBody>

@@ -1,32 +1,11 @@
 /**
  * Puzzle Generator Service
  *
- * Main entry point for puzzle generation using the modular PuzzleEngine.
- * Refactored from monolithic implementation to use SOLID-compliant architecture.
+ * Provides test puzzle generation and utility functions.
  */
 
 import type { Film, Group } from '../types';
-import { tmdbService } from './tmdb';
-import { recentContentService } from './recentContent';
-import {
-  PuzzleEngine,
-  DirectorAnalyzer,
-  ActorAnalyzer,
-  ThemeAnalyzer,
-  WordplayAnalyzer,
-  DecadeAnalyzer,
-  YearAnalyzer,
-  analyzerRegistry,
-} from '../lib/puzzle-engine';
 import { shuffleArray } from '../lib/puzzle-engine/utils/shuffle';
-
-// Register all available analyzers on module load
-analyzerRegistry.register(new DirectorAnalyzer());
-analyzerRegistry.register(new ActorAnalyzer());
-analyzerRegistry.register(new ThemeAnalyzer());
-analyzerRegistry.register(new WordplayAnalyzer());
-analyzerRegistry.register(new DecadeAnalyzer());
-analyzerRegistry.register(new YearAnalyzer());
 
 /**
  * Generate a test puzzle with hardcoded data.
@@ -98,69 +77,6 @@ export async function generateTestPuzzle(): Promise<{
     groups,
     films: shuffledFilms,
   };
-}
-
-/**
- * Generate a production puzzle using the PuzzleEngine.
- *
- * Workflow:
- * 1. Fetch random movie pool from TMDB
- * 2. Filter out recently used content
- * 3. Run all registered analyzers via PuzzleEngine
- * 4. Select non-overlapping groups with balanced difficulty
- * 5. Shuffle and format for game
- *
- * @returns Promise resolving to generated puzzle
- */
-export async function generatePuzzle(): Promise<{
-  groups: Group[];
-  films: Film[];
-}> {
-  try {
-    // Get recently used content to avoid repetition
-    const recentFilmIds = recentContentService.getRecentFilmIds();
-    const recentConnections = recentContentService.getRecentConnections();
-
-    // Fetch random pool of movies from different eras (150 total for better variety)
-    const moviePool = await tmdbService.getRandomMoviePool(150);
-
-    // Create engine with configuration
-    const engine = new PuzzleEngine({
-      poolSize: 150,
-      groupsNeeded: 4,
-      avoidRecentContent: true,
-      maxRetries: 3,
-    });
-
-    // Generate puzzle
-    const puzzle = await engine.generatePuzzle(
-      moviePool,
-      recentFilmIds,
-      recentConnections
-    );
-
-    return puzzle;
-  } catch (error) {
-    console.error('Error generating puzzle:', error);
-
-    // Retry without recent content filtering if we failed
-    console.warn('Retrying puzzle generation without recent content filter...');
-
-    try {
-      const moviePool = await tmdbService.getRandomMoviePool(150);
-      const engine = new PuzzleEngine({
-        poolSize: 150,
-        groupsNeeded: 4,
-        avoidRecentContent: false,
-        maxRetries: 3,
-      });
-
-      return await engine.generatePuzzle(moviePool);
-    } catch (retryError) {
-      console.error('Retry also failed:', retryError);
-      throw new Error('Failed to generate puzzle after retry');
-    }
-  }
 }
 
 /**

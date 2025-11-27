@@ -20,7 +20,7 @@ export function StreakDisplay({ currentStreak }: StreakDisplayProps) {
       <span className="streak-emoji" role="img" aria-label="fire">
         🔥
       </span>
-      <Text variant="body" weight="semibold">
+      <Text weight="semibold">
         {currentStreak}
       </Text>
     </Box>

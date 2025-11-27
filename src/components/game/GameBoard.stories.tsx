@@ -180,7 +180,7 @@ export const WithMistakes: Story = {
   ],
 };
 
-export const Won: Story = {
+export const Completed: Story = {
   args: {
     onViewStats: () => {},
   },
@@ -193,26 +193,6 @@ export const Won: Story = {
           foundGroups={mockGroups}
           gameStatus="won"
           mistakes={2}
-        />
-        <Story />
-      </>
-    ),
-  ],
-};
-
-export const Lost: Story = {
-  args: {
-    onViewStats: () => {},
-  },
-  decorators: [
-    (Story) => (
-      <>
-        <StoreInitializer
-          films={mockFilms.slice(8)}
-          groups={mockGroups}
-          foundGroups={[mockGroups[0], mockGroups[1]]}
-          gameStatus="lost"
-          mistakes={4}
         />
         <Story />
       </>

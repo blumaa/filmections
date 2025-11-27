@@ -19,6 +19,7 @@ import { PuzzleBuilder } from "./pages/admin/PuzzleBuilder";
 import { ThemeManager as AdminThemeManager } from "./pages/admin/ThemeManager";
 import { Analytics } from "./pages/admin/Analytics";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { Footer } from "./components/Footer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,86 +37,95 @@ function ThemedApp() {
     <ThemeProvider colorScheme={theme}>
       <ToastProvider>
         <BrowserRouter>
-          <Box display="flex" justifyContent="flex-end" padding="2">
-            <ThemeToggle />
-          </Box>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              minHeight: "100vh",
+            }}
+          >
+            <Box display="flex" justifyContent="flex-end" padding="1">
+              <ThemeToggle />
+            </Box>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
 
-            {/* Protected admin routes */}
-            <Route
-              path="/admin"
-              element={
-                <RequireAdmin>
-                  <AdminLayout>
-                    <AdminDashboard />
-                  </AdminLayout>
-                </RequireAdmin>
-              }
-            />
-            <Route
-              path="/admin/puzzles"
-              element={
-                <RequireAdmin>
-                  <AdminLayout>
-                    <PuzzleQueue />
-                  </AdminLayout>
-                </RequireAdmin>
-              }
-            />
-            <Route
-              path="/admin/generate"
-              element={
-                <RequireAdmin>
-                  <AdminLayout>
-                    <GroupGeneratorPage />
-                  </AdminLayout>
-                </RequireAdmin>
-              }
-            />
-            <Route
-              path="/admin/groups"
-              element={
-                <RequireAdmin>
-                  <AdminLayout>
-                    <GroupPool />
-                  </AdminLayout>
-                </RequireAdmin>
-              }
-            />
-            <Route
-              path="/admin/build"
-              element={
-                <RequireAdmin>
-                  <AdminLayout>
-                    <PuzzleBuilder />
-                  </AdminLayout>
-                </RequireAdmin>
-              }
-            />
-            <Route
-              path="/admin/themes"
-              element={
-                <RequireAdmin>
-                  <AdminLayout>
-                    <AdminThemeManager />
-                  </AdminLayout>
-                </RequireAdmin>
-              }
-            />
-            <Route
-              path="/admin/analytics"
-              element={
-                <RequireAdmin>
-                  <AdminLayout>
-                    <Analytics />
-                  </AdminLayout>
-                </RequireAdmin>
-              }
-            />
-          </Routes>
+              {/* Protected admin routes */}
+              <Route
+                path="/admin"
+                element={
+                  <RequireAdmin>
+                    <AdminLayout>
+                      <AdminDashboard />
+                    </AdminLayout>
+                  </RequireAdmin>
+                }
+              />
+              <Route
+                path="/admin/puzzles"
+                element={
+                  <RequireAdmin>
+                    <AdminLayout>
+                      <PuzzleQueue />
+                    </AdminLayout>
+                  </RequireAdmin>
+                }
+              />
+              <Route
+                path="/admin/generate"
+                element={
+                  <RequireAdmin>
+                    <AdminLayout>
+                      <GroupGeneratorPage />
+                    </AdminLayout>
+                  </RequireAdmin>
+                }
+              />
+              <Route
+                path="/admin/groups"
+                element={
+                  <RequireAdmin>
+                    <AdminLayout>
+                      <GroupPool />
+                    </AdminLayout>
+                  </RequireAdmin>
+                }
+              />
+              <Route
+                path="/admin/build"
+                element={
+                  <RequireAdmin>
+                    <AdminLayout>
+                      <PuzzleBuilder />
+                    </AdminLayout>
+                  </RequireAdmin>
+                }
+              />
+              <Route
+                path="/admin/themes"
+                element={
+                  <RequireAdmin>
+                    <AdminLayout>
+                      <AdminThemeManager />
+                    </AdminLayout>
+                  </RequireAdmin>
+                }
+              />
+              <Route
+                path="/admin/analytics"
+                element={
+                  <RequireAdmin>
+                    <AdminLayout>
+                      <Analytics />
+                    </AdminLayout>
+                  </RequireAdmin>
+                }
+              />
+            </Routes>
+            <Footer />
+          </div>
         </BrowserRouter>
       </ToastProvider>
     </ThemeProvider>

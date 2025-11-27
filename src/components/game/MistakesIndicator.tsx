@@ -13,20 +13,10 @@ export function MistakesIndicator({
   const remainingMistakes = maxMistakes - mistakes;
 
   return (
-    <Box
-      display="flex"
-      gap="md"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap="xs"
-        alignItems="center"
-      >
-        <Text variant="caption" weight="medium">
-          Mistakes remaining
+    <Box display="flex" justifyContent="center">
+      <Box display="flex" gap="xs">
+        <Text size="2xs" weight="extralight">
+          Mistakes remaining:
         </Text>
         <div className="mistakes-dots">
           {Array.from({ length: maxMistakes }).map((_, index) => (

@@ -1,5 +1,5 @@
 {
-  "name": "filmections",
+  "name": "filmecules",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -14,7 +14,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@mond-design-system/theme": "^2.9.3",
+    "@mond-design-system/theme": "^2.9.4",
     "@supabase/supabase-js": "^2.84.0",
     "@tanstack/react-query": "^5.90.10",
     "react": "^19.2.0",

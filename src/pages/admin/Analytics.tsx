@@ -6,7 +6,7 @@ export function Analytics() {
       <Heading level={1} size="2xl">
         Analytics
       </Heading>
-      <Text variant="body">
+      <Text responsive>
         Analytics dashboard will be implemented in MDS-131.
       </Text>
     </Box>
