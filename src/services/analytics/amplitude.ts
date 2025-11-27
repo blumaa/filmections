@@ -25,7 +25,9 @@ export function initAnalytics() {
   }
 
   amplitude.init(AMPLITUDE_API_KEY, {
-    defaultTracking: {
+    serverZone: "EU",
+    autocapture: {
+      attribution: true,
       pageViews: true,
       sessions: true,
     },
