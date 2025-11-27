@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal } from "@mond-design-system/theme/client";
-import { Box, Heading, Text, Button, Divider } from "@mond-design-system/theme";
+import { Box, Heading, Text, Button } from "@mond-design-system/theme";
 import { useStats } from "../../providers/useStats";
 import { Stats } from "./Stats";
 import { CountdownTimer } from "./CountdownTimer";
