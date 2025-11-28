@@ -6,19 +6,7 @@ import { ThemeContextProvider } from "./providers/ThemeContext";
 import { useThemeContext } from "./providers/useThemeContext";
 import { StorageProvider } from "./providers/StorageProvider";
 import { StatsProvider } from "./providers/StatsProvider";
-import { AuthProvider } from "./providers/AuthProvider";
 import { HomePage } from "./pages/HomePage";
-import { LoginPage } from "./pages/LoginPage";
-import { RequireAdmin } from "./components/admin/RequireAdmin";
-import { AdminLayout } from "./components/admin/AdminLayout";
-import { AdminDashboard } from "./pages/admin/Dashboard";
-import { PuzzleQueue } from "./pages/admin/PuzzleQueue";
-import { GroupPool } from "./pages/admin/GroupPool";
-import { PuzzleBuilder } from "./pages/admin/PuzzleBuilder";
-import { ThemeManager as AdminThemeManager } from "./pages/admin/ThemeManager";
-import { Analytics } from "./pages/admin/Analytics";
-import { ConnectionTypesPage } from "./pages/admin/ConnectionTypesPage";
-import { NewGroupGeneratorPage } from "./pages/admin/NewGroupGeneratorPage";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { Footer } from "./components/Footer";
 
@@ -49,91 +37,7 @@ function ThemedApp() {
               <ThemeToggle />
             </Box>
             <Routes>
-              {/* Public routes */}
               <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-
-              {/* Protected admin routes */}
-              <Route
-                path="/admin"
-                element={
-                  <RequireAdmin>
-                    <AdminLayout>
-                      <AdminDashboard />
-                    </AdminLayout>
-                  </RequireAdmin>
-                }
-              />
-              <Route
-                path="/admin/puzzles"
-                element={
-                  <RequireAdmin>
-                    <AdminLayout>
-                      <PuzzleQueue />
-                    </AdminLayout>
-                  </RequireAdmin>
-                }
-              />
-              <Route
-                path="/admin/groups"
-                element={
-                  <RequireAdmin>
-                    <AdminLayout>
-                      <GroupPool />
-                    </AdminLayout>
-                  </RequireAdmin>
-                }
-              />
-              <Route
-                path="/admin/build"
-                element={
-                  <RequireAdmin>
-                    <AdminLayout>
-                      <PuzzleBuilder />
-                    </AdminLayout>
-                  </RequireAdmin>
-                }
-              />
-              <Route
-                path="/admin/themes"
-                element={
-                  <RequireAdmin>
-                    <AdminLayout>
-                      <AdminThemeManager />
-                    </AdminLayout>
-                  </RequireAdmin>
-                }
-              />
-              <Route
-                path="/admin/analytics"
-                element={
-                  <RequireAdmin>
-                    <AdminLayout>
-                      <Analytics />
-                    </AdminLayout>
-                  </RequireAdmin>
-                }
-              />
-              <Route
-                path="/admin/connection-types"
-                element={
-                  <RequireAdmin>
-                    <AdminLayout>
-                      <ConnectionTypesPage />
-                    </AdminLayout>
-                  </RequireAdmin>
-                }
-              />
-              <Route
-                path="/admin/generate"
-                element={
-                  <RequireAdmin>
-                    <AdminLayout>
-                      <NewGroupGeneratorPage />
-                    </AdminLayout>
-                  </RequireAdmin>
-                }
-              />
             </Routes>
             <Footer />
           </div>
@@ -146,15 +50,13 @@ function ThemedApp() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <StorageProvider>
-          <StatsProvider>
-            <ThemeContextProvider>
-              <ThemedApp />
-            </ThemeContextProvider>
-          </StatsProvider>
-        </StorageProvider>
-      </AuthProvider>
+      <StorageProvider>
+        <StatsProvider>
+          <ThemeContextProvider>
+            <ThemedApp />
+          </ThemeContextProvider>
+        </StatsProvider>
+      </StorageProvider>
     </QueryClientProvider>
   );
 }

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { GameState, Group, Film } from '../types';
-import { shuffleArray } from '../lib/puzzle-engine/utils/shuffle';
+import { shuffleArray } from '../utils';
 import { trackEvent, EVENTS } from '../services/analytics';
 
 interface GameActions {

@@ -1,9 +1,0 @@
-.reject-btn-wrapper button {
-  color: var(--color-danger) !important;
-  border-color: var(--color-danger) !important;
-}
-
-.reject-btn-wrapper button:hover {
-  background: var(--color-danger) !important;
-  color: white !important;
-}

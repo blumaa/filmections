@@ -88,5 +88,16 @@ export interface GameStats {
   lastPlayedDate: string;
 }
 
+/**
+ * Saved puzzle format for persistence.
+ */
+export interface SavedPuzzle {
+  id: string;
+  groups: Group[];
+  films: Film[];
+  createdAt: number;
+  metadata?: Record<string, unknown>;
+}
+
 // Re-export stats types
 export type { GameResult, UserStats, IStatsStorage } from './stats';

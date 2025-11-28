@@ -101,3 +101,19 @@ export function getTextLengthProps(title: string) {
   }
   return {};
 }
+
+/**
+ * Shuffle an array using Fisher-Yates algorithm.
+ * Returns a new shuffled array (does not mutate the original).
+ *
+ * @param array - Array to shuffle
+ * @returns New shuffled array
+ */
+export function shuffleArray<T>(array: T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}

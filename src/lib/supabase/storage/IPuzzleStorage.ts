@@ -5,8 +5,7 @@
  * Following Interface Segregation and Dependency Inversion principles.
  */
 
-import type { SavedPuzzle } from '../../puzzle-engine/types';
-import type { Group } from '../../../types';
+import type { SavedPuzzle, Group } from '../../../types';
 import type { Database } from '../types';
 
 /**

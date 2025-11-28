@@ -55,7 +55,7 @@ export function ResultsModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <Box display="flex" flexDirection="column" gap="xxs">
+      <Box display="flex" flexDirection="column" gap="xxs" paddingTop="2">
         <Box
           display="flex"
           flexDirection="column"

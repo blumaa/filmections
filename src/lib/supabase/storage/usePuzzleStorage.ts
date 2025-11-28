@@ -12,7 +12,7 @@ import {
   type UseQueryOptions,
   type UseMutationOptions,
 } from '@tanstack/react-query';
-import type { SavedPuzzle } from '../../puzzle-engine/types';
+import type { SavedPuzzle } from '../../../types';
 import type {
   IPuzzleStorage,
   StoredPuzzle,

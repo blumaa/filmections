@@ -9,8 +9,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../types';
-import type { SavedPuzzle } from '../../puzzle-engine/types';
-import type { Group, Film } from '../../../types';
+import type { SavedPuzzle, Group, Film } from '../../../types';
 import type {
   IPuzzleStorage,
   StoredPuzzle,
