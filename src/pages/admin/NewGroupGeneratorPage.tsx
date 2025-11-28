@@ -6,7 +6,7 @@
  * Admin approves/rejects groups with difficulty settings.
  */
 
-import { useState, useEffect, useCallback, ChangeEvent } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Box, Heading, Text, Button, Card, Badge, Spinner } from '@mond-design-system/theme'
 import { Modal, ModalBody, ModalFooter } from '@mond-design-system/theme/client'
 import { useToast } from '../../providers/useToast'
@@ -106,14 +106,19 @@ export function NewGroupGeneratorPage() {
         typesToUse = connectionTypes.filter((t) => selectedTypeIds.includes(t.id))
       }
 
-      // Get feedback examples for learning
-      const [goodExamples, badExamples] = await Promise.all([
+      // Get feedback examples for learning and existing connections to exclude
+      const [goodExamples, badExamples, existingGroupsResult] = await Promise.all([
         feedbackStore.getAcceptedExamples(10),
         feedbackStore.getRejectedExamples(10),
+        groupStorage.listGroups({ limit: 1000 }),
       ])
+
+      // Extract existing connection strings to avoid duplicates
+      const existingConnections = existingGroupsResult.groups.map((g) => g.connection)
 
       const filters: GenerationFilters = {
         yearRange: [yearStart, yearEnd],
+        excludeConnections: existingConnections,
       }
 
       // Call API route (Claude runs server-side)
@@ -267,9 +272,7 @@ export function NewGroupGeneratorPage() {
               type="number"
               className="new-generator-input"
               value={yearStart}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setYearStart(parseInt(e.target.value) || 1900)
-              }
+              onChange={(e) => setYearStart(parseInt(e.target.value) || 1900)}
               min={1900}
               max={yearEnd}
             />
@@ -278,9 +281,7 @@ export function NewGroupGeneratorPage() {
               type="number"
               className="new-generator-input"
               value={yearEnd}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setYearEnd(parseInt(e.target.value) || 2024)
-              }
+              onChange={(e) => setYearEnd(parseInt(e.target.value) || 2024)}
               min={yearStart}
               max={new Date().getFullYear()}
             />
@@ -445,9 +446,7 @@ export function NewGroupGeneratorPage() {
               <textarea
                 className="new-generator-textarea"
                 value={rejectReason}
-                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                  setRejectReason(e.target.value)
-                }
+                onChange={(e) => setRejectReason(e.target.value)}
                 placeholder="e.g., Connection is too obvious, films don't fit well..."
                 rows={3}
               />

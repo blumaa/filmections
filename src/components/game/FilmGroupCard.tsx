@@ -1,14 +1,12 @@
-import { Badge, Box, Card, Heading, Text } from "@mond-design-system/theme";
+import { Box, Card, Heading, Text } from "@mond-design-system/theme";
 import type { Group } from "../../types";
 import "./FilmGroupCard.css";
-import { useThemeContext } from "../../providers/useThemeContext";
 import { getTextLengthProps } from "../../utils";
 interface FilmGroupCardProps {
   group: Group;
 }
 
 export function FilmGroupCard({ group }: FilmGroupCardProps) {
-  const { theme } = useThemeContext();
   const textLengthProps = getTextLengthProps(group.connection);
   return (
     <Card className={`film-group-card ${group.color}`}>

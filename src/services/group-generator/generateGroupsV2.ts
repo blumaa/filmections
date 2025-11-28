@@ -173,7 +173,7 @@ function parseResponse(text: string): AIResponse {
 
 function mapToGeneratedGroups(response: AIResponse): GeneratedGroup[] {
   return response.groups.map((group) => ({
-    id: crypto.randomUUID(),
+    id: globalThis.crypto.randomUUID(),
     films: group.films.map(
       (f): VerifiedFilm => ({
         title: f.title,

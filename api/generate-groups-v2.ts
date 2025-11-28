@@ -55,6 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const response = await client.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 8192,
+      temperature: 1,
       messages: [{ role: 'user', content: prompt }],
     })
 
@@ -183,7 +184,7 @@ function parseResponse(text: string): AIGroupResponse {
 
 function mapToGeneratedGroups(response: AIGroupResponse): GeneratedGroup[] {
   return response.groups.map((group) => ({
-    id: crypto.randomUUID(),
+    id: globalThis.crypto.randomUUID(),
     films: group.films.map(
       (f): VerifiedFilm => ({
         title: f.title,
