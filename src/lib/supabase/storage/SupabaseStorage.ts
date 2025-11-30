@@ -132,12 +132,13 @@ export class SupabaseStorage implements IPuzzleStorage {
     return puzzle;
   }
 
-  async getDailyPuzzle(date: string): Promise<SavedPuzzle | null> {
+  async getDailyPuzzle(date: string, genre: string = 'films'): Promise<SavedPuzzle | null> {
     const { data, error } = await this.supabase
       .from('puzzles')
       .select()
       .eq('puzzle_date', date)
       .eq('status', 'published')
+      .eq('genre', genre)
       .maybeSingle();
 
     if (error) {

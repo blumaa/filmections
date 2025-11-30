@@ -92,14 +92,15 @@ export interface IPuzzleStorage {
   getPuzzle(id: string): Promise<StoredPuzzle | null>;
 
   /**
-   * Get the published puzzle for a specific date.
+   * Get the published puzzle for a specific date and genre.
    * This is the primary method for loading daily puzzles (public access).
    * Returns assembled SavedPuzzle with groups data fetched from connection_groups.
    *
    * @param date - Date string (YYYY-MM-DD format)
+   * @param genre - Genre to filter by (defaults to 'films')
    * @returns Promise resolving to puzzle or null if no puzzle assigned to date
    */
-  getDailyPuzzle(date: string): Promise<SavedPuzzle | null>;
+  getDailyPuzzle(date: string, genre?: string): Promise<SavedPuzzle | null>;
 
   /**
    * List puzzles with optional filtering and pagination.

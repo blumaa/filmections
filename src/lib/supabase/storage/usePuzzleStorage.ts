@@ -32,7 +32,7 @@ export const puzzleKeys = {
   list: (filters?: PuzzleListFilters) => [...puzzleKeys.lists(), filters] as const,
   details: () => [...puzzleKeys.all, 'detail'] as const,
   detail: (id: string) => [...puzzleKeys.details(), id] as const,
-  daily: (date: string) => [...puzzleKeys.all, 'daily', date] as const,
+  daily: (date: string, genre?: string) => [...puzzleKeys.all, 'daily', date, genre] as const,
 };
 
 /**
@@ -40,17 +40,19 @@ export const puzzleKeys = {
  * Primary use case: Game loads puzzle for anonymous users.
  *
  * @param date - Date string (YYYY-MM-DD)
+ * @param genre - Genre to filter by (defaults to 'films')
  * @param storage - Storage implementation
  * @param options - TanStack Query options
  */
 export function useDailyPuzzle(
   date: string,
+  genre: string = 'films',
   storage: IPuzzleStorage,
   options?: Omit<UseQueryOptions<SavedPuzzle | null>, 'queryKey' | 'queryFn'>
 ) {
   return useQuery({
-    queryKey: puzzleKeys.daily(date),
-    queryFn: () => storage.getDailyPuzzle(date),
+    queryKey: puzzleKeys.daily(date, genre),
+    queryFn: () => storage.getDailyPuzzle(date, genre),
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes, then revalidate
     gcTime: 30 * 60 * 1000, // Keep in memory for 30 minutes
     ...options,
@@ -218,15 +220,16 @@ export function useDeletePuzzle(
  * Used to improve perceived performance.
  *
  * @param date - Tomorrow's date (YYYY-MM-DD)
+ * @param genre - Genre to filter by (defaults to 'films')
  * @param storage - Storage implementation
  */
-export function usePrefetchDailyPuzzle(date: string, storage: IPuzzleStorage) {
+export function usePrefetchDailyPuzzle(date: string, genre: string = 'films', storage: IPuzzleStorage) {
   const queryClient = useQueryClient();
 
   return () => {
     queryClient.prefetchQuery({
-      queryKey: puzzleKeys.daily(date),
-      queryFn: () => storage.getDailyPuzzle(date),
+      queryKey: puzzleKeys.daily(date, genre),
+      queryFn: () => storage.getDailyPuzzle(date, genre),
       staleTime: 24 * 60 * 60 * 1000,
     });
   };

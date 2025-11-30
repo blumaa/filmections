@@ -23,7 +23,7 @@ export function HomePage() {
   const storage = useStorage();
   const stats = useStats();
   const today = getTodayDate();
-  const { data: puzzle, isLoading, error } = useDailyPuzzle(today, storage);
+  const { data: puzzle, isLoading, error } = useDailyPuzzle(today, 'films', storage);
 
   // Check if user has already played today
   useEffect(() => {
