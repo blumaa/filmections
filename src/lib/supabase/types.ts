@@ -14,7 +14,7 @@ export interface Database {
         Row: {
           id: string;
           created_at: string;
-          films: Json;
+          items: Json;
           connection: string;
           connection_type: string;
           difficulty_score: number;
@@ -28,7 +28,7 @@ export interface Database {
         Insert: {
           id?: string;
           created_at?: string;
-          films: Json;
+          items: Json;
           connection: string;
           connection_type: string;
           difficulty_score: number;
@@ -42,7 +42,7 @@ export interface Database {
         Update: {
           id?: string;
           created_at?: string;
-          films?: Json;
+          items?: Json;
           connection?: string;
           connection_type?: string;
           difficulty_score?: number;
@@ -63,6 +63,8 @@ export interface Database {
           group_ids: string[];
           status: 'pending' | 'approved' | 'published' | 'rejected';
           metadata: Json | null;
+          genre: string;
+          groups: Json | null;
         };
         Insert: {
           id?: string;
@@ -72,6 +74,8 @@ export interface Database {
           group_ids?: string[];
           status?: 'pending' | 'approved' | 'published' | 'rejected';
           metadata?: Json | null;
+          genre?: string;
+          groups?: Json | null;
         };
         Update: {
           id?: string;
@@ -81,6 +85,8 @@ export interface Database {
           group_ids?: string[];
           status?: 'pending' | 'approved' | 'published' | 'rejected';
           metadata?: Json | null;
+          genre?: string;
+          groups?: Json | null;
         };
       };
       user_stats: {
@@ -220,7 +226,7 @@ export interface Database {
         Row: {
           id: string;
           created_at: string;
-          films: Json;
+          items: Json;
           connection: string;
           connection_type_id: string | null;
           explanation: string | null;
@@ -231,7 +237,7 @@ export interface Database {
         Insert: {
           id?: string;
           created_at?: string;
-          films: Json;
+          items: Json;
           connection: string;
           connection_type_id?: string | null;
           explanation?: string | null;
@@ -242,7 +248,7 @@ export interface Database {
         Update: {
           id?: string;
           created_at?: string;
-          films?: Json;
+          items?: Json;
           connection?: string;
           connection_type_id?: string | null;
           explanation?: string | null;

@@ -33,13 +33,14 @@ export class SupabaseGroupStorage implements IGroupStorage {
   constructor(private supabase: SupabaseClient<Database>) {}
 
   /**
-   * Convert database row to StoredGroup
+   * Convert database row to StoredGroup.
+   * Maps 'items' from database to 'films' for this app.
    */
   private rowToStoredGroup(row: DbGroupRow): StoredGroup {
     return {
       id: row.id,
       createdAt: new Date(row.created_at).getTime(),
-      films: row.films as unknown as Film[],
+      films: row.items as unknown as Film[], // Map items → films
       connection: row.connection,
       connectionType: row.connection_type,
       difficultyScore: row.difficulty_score,
@@ -53,11 +54,12 @@ export class SupabaseGroupStorage implements IGroupStorage {
   }
 
   /**
-   * Convert GroupInput to database insert format
+   * Convert GroupInput to database insert format.
+   * Maps 'films' from app to 'items' for database.
    */
   private groupToInsert(group: GroupInput): DbGroupInsert {
     return {
-      films: group.films as unknown as DbGroupInsert['films'],
+      items: group.films as unknown as DbGroupInsert['items'], // Map films → items
       connection: group.connection,
       connection_type: group.connectionType,
       difficulty_score: group.difficultyScore,

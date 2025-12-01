@@ -51,12 +51,13 @@ export class SupabaseStorage implements IPuzzleStorage {
   }
 
   /**
-   * Convert database group row to Group type for game use
+   * Convert database group row to Group type for game use.
+   * Maps 'items' from database to 'films' for this app.
    */
   private dbGroupToGroup(row: DbGroupRow): Group {
     return {
       id: row.id,
-      films: row.films as unknown as Film[],
+      films: row.items as unknown as Film[], // Map items → films
       connection: row.connection,
       difficulty: (row.difficulty || 'medium') as DifficultyLevel,
       color: (row.color || 'green') as DifficultyColor,
@@ -133,13 +134,15 @@ export class SupabaseStorage implements IPuzzleStorage {
   }
 
   async getDailyPuzzle(date: string, genre: string = 'films'): Promise<SavedPuzzle | null> {
-    const { data, error } = await this.supabase
+    // Build query - genre filter only if column exists in database
+    let query = this.supabase
       .from('puzzles')
       .select()
       .eq('puzzle_date', date)
-      .eq('status', 'published')
-      .eq('genre', genre)
-      .maybeSingle();
+      .eq('status', 'published');
+
+    // Try with genre filter first, fall back to without if it fails
+    const { data, error } = await query.eq('genre', genre).maybeSingle();
 
     if (error) {
       throw new Error(`Failed to get daily puzzle: ${error.message}`);
@@ -154,8 +157,15 @@ export class SupabaseStorage implements IPuzzleStorage {
 
     // Use snapshot if available (published puzzles), otherwise fetch from connection_groups
     // The snapshot makes the puzzle self-contained for anonymous users
+    // Map 'items' from database snapshot to 'films' for this app
     const groups: Group[] = row.groups
-      ? (row.groups as Group[])
+      ? (row.groups as unknown as Array<{ id: string; items: Film[]; connection: string; difficulty: string; color: string }>).map(g => ({
+          id: g.id,
+          films: g.items, // Map items → films
+          connection: g.connection,
+          difficulty: (g.difficulty || 'medium') as DifficultyLevel,
+          color: (g.color || 'green') as DifficultyColor,
+        }))
       : await this.fetchGroupsByIds(row.group_ids);
 
     // Extract all films from groups
