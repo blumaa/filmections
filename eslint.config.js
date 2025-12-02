@@ -65,6 +65,7 @@ export default [js.configs.recommended, {
       { allowConstantExport: true },
     ],
     'react/react-in-jsx-scope': 'off',
+    'react/no-unescaped-entities': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },
   settings: {
